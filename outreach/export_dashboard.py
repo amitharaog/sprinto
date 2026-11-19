@@ -18,8 +18,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from . import config as cfg
-from .step2_extract import CompanyProfile
-from .step3c_future import missing_signals
 from .config import QUALIFY_SCORE_THRESHOLD as QUALIFY_THRESHOLD
 
 STAGES = ["Scraped", "Qualified", "Contact found", "Emailed"]
@@ -127,7 +125,6 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
         (site_dir / "data.json").write_text(json.dumps(
             {"run": run_dir.name, "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
              "threshold": QUALIFY_THRESHOLD, "companies": companies, "scores": scores, "loop": loop,
-             "near_miss_signals": [{"signal": sig, "points": pts} for pts, sig, _ in missing_signals(CompanyProfile())],
              "value_assumptions": {
                  "price_first_framework": [{"max_employees": m if m < 10**9 else None, "low": lo, "high": hi}
                                            for m, lo, hi in cfg.PRICE_FIRST_FRAMEWORK],
