@@ -31,8 +31,6 @@
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5z"/></svg></span>Decision trace</a>
         <a href="#companies" data-nav="companies">
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v4H5zm0 6h14v4H5zm0 6h14v2H5z"/></svg></span>Companies</a>
-        <a href="#how" data-nav="how">
-          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 16.5v.5M10 9.6a2.1 2.1 0 1 1 3 1.9c-.7.4-1 .9-1 1.6v.4" stroke="#0b3a30" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></span>How it works</a>
       </nav>
       <div class="side-foot">
         <p class="nav-label">Run</p>
@@ -240,34 +238,6 @@
         </article>
       </section>
 
-      <!-- How it works -->
-      <section class="view" id="view-how" data-title="How it works" hidden>
-        <div class="row how-grid">
-          <article class="card">
-            <h2>The 7-step pipeline</h2>
-            <ol class="steps" id="steps">
-              <li><b>Scrape</b><span>Reads the homepage politely: robots.txt checked, bot blocks recorded, not evaded</span><em data-k="researched">—</em></li>
-              <li><b>Extract</b><span>Turns page text into named fields with a quote for each</span><em data-k="researched">—</em></li>
-              <li><b>Qualify (agent loop)</b><span>Fetches security, careers, pricing pages only for open questions</span><em data-k="qualified">—</em></li>
-              <li><b>Find contact</b><span>Ranks roles by company size; Hunter.io finds the address</span><em data-k="contacts">—</em></li>
-              <li><b>Pain points</b><span>Two per person, each tied to a scraped fact</span><em data-k="contacts">—</em></li>
-              <li><b>Draft email</b><span>Code checks name, length, one ask and a real hook</span><em data-k="drafted">—</em></li>
-              <li><b>Send</b><span>To the Growth Lead's own inbox, with review notes</span><em data-k="emailed">—</em></li>
-            </ol>
-            <p class="fine">Numbers are companies that completed each step in this run.</p>
-          </article>
-          <article class="card rules">
-            <h2>How a company is qualified</h2>
-            <ul>
-              <li><b>Hard gates</b> end the assessment: sells compliance automation, already uses a compliance platform (for example a trust centre hosted by Vanta), not software, consumer-only, holds both SOC 2 and ISO 27001, or is public or acquired.</li>
-              <li><b>Points:</b> Series A–C +3, 20–500 people +2, enterprise signals +2, hiring for security or compliance +3, certification in progress +3, regulated industry +2, sells in the EU/UK +1, no certification +2, holds one of SOC 2 / ISO 27001 +1. Qualify at <b class="thr">—</b>.</li>
-              <li><b>The agent loop</b> reads extra pages only for questions the homepage left open, at most 4 per company.</li>
-              <li><b>Contacts</b> are ranked by role for the company's size band, then found with Hunter.io. If the top person has no findable address, the best-ranked reachable person is chosen. Shown here by role only; names are in the emails.</li>
-            </ul>
-            <p class="foot" id="foot"></p>
-          </article>
-        </div>
-      </section>
     </main>
   </div>
   <script src="app.js"></script>

@@ -420,7 +420,7 @@
   }
 
   // ---------- pages ----------
-  const VIEWS = ['dashboard', 'qualification', 'value', 'future', 'trace', 'companies', 'how'];
+  const VIEWS = ['dashboard', 'qualification', 'value', 'future', 'trace', 'companies'];
   let T = null;
 
   const LEDES = {
@@ -430,7 +430,6 @@
     future: () => { const f = futureGroups(); return ['Companies that didn\'t qualify this time but could later: ', el('b', null, String(f.now.length)), ' to re-check now, ', el('b', null, String(f.watch.length)), ' to watch.']; },
     trace: () => ['Every decision the system made for one company: why it qualified, who to contact, and what the agent read.'],
     companies: () => [el('b', null, String(T.researched)), ' companies in this run. Click a row to open its decision.'],
-    how: () => ['The 7 steps, the ICP rules and where the numbers come from.'],
   };
 
   function drawView(name) {
@@ -506,7 +505,6 @@
     ring(document.getElementById('ring-drafts'), T.drafted ? T.firstTry / T.drafted : 0, `${T.firstTry}/${T.drafted}`, C.green, '#cfe7da', '#0f1f1a');
     document.getElementById('draft-note').textContent = `${T.firstTry} of ${T.drafted} drafts passed every check (name, length, one ask, real hook) on the first try`;
     document.getElementById('chips').replaceChildren(...d.companies.filter((c) => c.outcome === 'emailed').map((c) => el('span', { class: 'chip' }, c.email_subject)));
-    document.getElementById('foot').textContent = `Data: data.json from run "${d.run}", exported ${gen.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}. Contacts are listed by role only.`;
 
     picked = picked || (d.companies.find((c) => c.outcome === 'emailed') || d.companies[0] || {}).domain;
     route();
