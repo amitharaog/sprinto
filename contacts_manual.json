@@ -1,0 +1,13 @@
+{
+  "_comment": "Option B (Apollo.io): look up the PoC manually in Apollo's web UI and paste them here, keyed by domain. Used when HUNTER_API_KEY is empty or Hunter returns nobody usable.",
+  "example.com": [
+    {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "position": "Head of Security",
+      "email": "jane@example.com",
+      "linkedin": "https://www.linkedin.com/in/janedoe",
+      "source": "apollo_manual"
+    }
+  ]
+}

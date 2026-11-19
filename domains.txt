@@ -1,0 +1,5 @@
+# One domain per line. Lines starting with # are ignored.
+# Replace these with the prospects you want to run.
+posthog.com
+linear.app
+chargebee.com
