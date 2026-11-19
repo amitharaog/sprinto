@@ -27,6 +27,19 @@ def _points(line: str) -> tuple[int, str]:
     return (int(m.group(1)), m.group(2)) if m else (0, line)
 
 
+def _tidy_title(t: str) -> str:
+    """Hunter titles come title-cased ('Ceo And Founder'): restore acronyms and lowercase 'and'/'of'."""
+    words = []
+    for w in t.split():
+        u = w.upper().strip(",&")
+        if u in {"CEO", "CTO", "COO", "CFO", "CIO", "CISO", "VP", "SVP", "EVP", "GRC", "IT", "HR"}:
+            w = w.upper()
+        elif w.lower() in {"and", "of", "the", "for"} and words:
+            w = w.lower()
+        words.append(w)
+    return " ".join(words)
+
+
 def _source_label(src: str) -> str:
     """'hunter', 'web_research: <url> + hunter email finder' -> short, human labels."""
     parts = []
@@ -68,7 +81,7 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
             "why_now": (q.get("judgment") or {}).get("why_now_trigger", ""),
             "certifications": "; ".join(prof.get("certifications_held") or []),
             "extra_pages_read": q.get("extra_fetches", 0),
-            "contact_role": poc.get("position", ""),
+            "contact_role": _tidy_title(poc.get("position", "")),
             "contact_source": _source_label(poc.get("source") or ""),
             "contact_confidence": poc.get("confidence") or "",
             "email_subject": draft.get("subject", ""),

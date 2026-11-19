@@ -7,90 +7,149 @@
   <meta name="description" content="Which prospects qualified for Sprinto, why, who was contacted, and every step the research agent took.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Schibsted+Grotesk:wght@600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="wrap">
-    <header class="head" id="overview">
-      <p class="eyebrow">MESA Term 2 · AI Case 2 · Cold outreach at scale</p>
-      <h1>Sprinto outreach pipeline</h1>
-      <p class="lede" id="lede">Loading the latest run…</p>
-      <p class="meta" id="meta"></p>
-    </header>
-
-    <section class="steps" aria-label="Pipeline steps">
-      <ol id="steps">
-        <li><span class="n">1</span><span class="t">Scrape</span><b data-k="scraped">—</b></li>
-        <li><span class="n">2</span><span class="t">Extract</span><b data-k="scraped">—</b></li>
-        <li><span class="n">3</span><span class="t">Qualify loop</span><b data-k="qualified">—</b></li>
-        <li><span class="n">4</span><span class="t">Find contact</span><b data-k="contacts">—</b></li>
-        <li><span class="n">5</span><span class="t">Pain points</span><b data-k="contacts">—</b></li>
-        <li><span class="n">6</span><span class="t">Draft email</span><b data-k="drafted">—</b></li>
-        <li><span class="n">7</span><span class="t">Send</span><b data-k="emailed">—</b></li>
-      </ol>
-      <p class="caption">Companies that completed each step of the 7-step pipeline</p>
-    </section>
-
-    <section class="kpis" aria-label="Run totals">
-      <div class="card kpi"><span class="label">Companies researched</span><span class="value" data-k="researched">—</span><span class="note">Domains in the run</span></div>
-      <div class="card kpi"><span class="label">Qualified</span><span class="value" data-k="qualified">—</span><span class="note" id="qual-note">Passed every gate and met the score threshold</span></div>
-      <div class="card kpi"><span class="label">Emails sent</span><span class="value" data-k="emailed">—</span><span class="note">To the Growth Lead's own inbox, with review notes</span></div>
-      <div class="card kpi"><span class="label">Extra pages read</span><span class="value" data-k="pages">—</span><span class="note">Fetched by the agent loop beyond homepages</span></div>
-    </section>
-
-    <div class="two">
-      <section class="block" id="funnel">
-        <h2>Where each company stopped</h2>
-        <p class="caption">Companies reaching each step</p>
-        <div class="chart" id="funnel-chart"></div>
-      </section>
-      <section class="block" id="dropped">
-        <h2>Why companies were dropped</h2>
-        <p class="caption">Disqualified companies by the rule that stopped them</p>
-        <div class="chart" id="drop-chart"></div>
-      </section>
-    </div>
-
-    <section class="block" id="scores">
-      <h2>ICP score by company</h2>
-      <p class="caption">Points from the scoring table. The dashed line is the qualify threshold. Hard gates (already on a compliance platform, not SaaS) drop a company whatever its score. Hover or tap a bar for its reasons; click to open its trace.</p>
-      <div class="chart" id="score-chart"></div>
-    </section>
-
-    <section class="block card" id="company">
-      <div class="pick">
-        <h2>Company decision trace</h2>
-        <label for="pick">Company</label>
-        <select id="pick" aria-label="Company"></select>
+  <div class="shell">
+    <aside class="side" aria-label="Sidebar">
+      <a class="brand" href="#overview" aria-label="Outreach pipeline home">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" fill="#3ecf75"/><path d="m11.3 13.7 3.9-4.4" stroke="#0b3a30" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Outreach</span>
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <p class="nav-label">Navigation</p>
+        <a href="#overview" class="active" data-nav>
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg></span>Dashboard</a>
+        <a href="#qualify" data-nav>
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9m7 10V5m7 14v-7" stroke-width="2.4" stroke-linecap="round"/></svg></span>Qualification</a>
+        <a href="#trace" data-nav>
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5z"/></svg></span>Decision trace</a>
+        <a href="#all" data-nav>
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v4H5zm0 6h14v4H5zm0 6h14v2H5z"/></svg></span>Companies</a>
+        <a href="#how" data-nav>
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 16.5v.5M10 9.6a2.1 2.1 0 1 1 3 1.9c-.7.4-1 .9-1 1.6v.4" stroke="#0b3a30" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></span>How it works</a>
+      </nav>
+      <div class="side-foot">
+        <p class="nav-label">Run</p>
+        <div class="run">
+          <span class="run-dot" aria-hidden="true"></span>
+          <div><b id="run-name">—</b><span id="run-date">—</span></div>
+        </div>
       </div>
-      <div class="detail" id="detail"></div>
-    </section>
+    </aside>
 
-    <section class="block" id="all">
-      <h2>All companies</h2>
-      <div class="tablewrap">
-        <table class="table">
-          <thead>
-            <tr><th>Company</th><th>Outcome</th><th class="num">Score</th><th>Decision</th><th>Contact</th><th>Email subject</th></tr>
-          </thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-    </section>
+    <main class="panel">
+      <header class="top" id="overview">
+        <div>
+          <h1>Outreach dashboard</h1>
+          <p class="lede" id="lede">Loading the latest run…</p>
+        </div>
+        <a class="btn-dark" href="data.json" target="_blank" rel="noopener">Raw data</a>
+      </header>
 
-    <details class="notes">
-      <summary>How a company is qualified</summary>
-      <ul>
-        <li><b>Hard gates</b> end the assessment: sells compliance automation, already uses a compliance platform (for example a trust centre hosted by Vanta), not software, consumer-only, holds both SOC 2 and ISO 27001, or is public or acquired.</li>
-        <li><b>Points:</b> Series A–C +3, 20–500 people +2, enterprise signals +2, hiring for security or compliance +3, certification in progress +3, regulated industry +2, sells in the EU/UK +1, no certification +2, holds one of SOC 2 / ISO 27001 +1.</li>
-        <li><b>The agent loop</b> reads extra pages (security, careers, pricing, customers) only for questions the homepage left open, at most 4 per company.</li>
-        <li><b>Contacts</b> are chosen by role for the company's size band and shown here by role only. Names are in the emails, which go to the Growth Lead's own inbox for review before any real send.</li>
-      </ul>
-    </details>
+      <section class="row kpis" aria-label="Run totals">
+        <article class="card kpi">
+          <div>
+            <p class="k-label">Companies researched</p>
+            <p class="k-value"><span data-k="researched">—</span></p>
+            <p class="k-delta up" id="d-researched">—</p>
+          </div>
+          <div class="mini" id="mini-researched" aria-hidden="true"></div>
+        </article>
+        <article class="card kpi">
+          <div>
+            <p class="k-label">Disqualified</p>
+            <p class="k-value"><span data-k="dropped">—</span><small>/<span data-k="researched">—</span></small></p>
+            <p class="k-delta down" id="d-dropped">—</p>
+          </div>
+          <div class="mini" id="mini-dropped" aria-hidden="true"></div>
+        </article>
+        <article class="card kpi">
+          <div>
+            <p class="k-label">Emails sent for review</p>
+            <p class="k-value"><span data-k="emailed">—</span></p>
+            <p class="k-delta up" id="d-emailed">—</p>
+          </div>
+          <div class="mini" id="mini-emailed" aria-hidden="true"></div>
+        </article>
+      </section>
 
-    <footer class="foot" id="foot"></footer>
-  </main>
+      <section class="row mid" id="qualify">
+        <article class="card center">
+          <h2>Qualification rate</h2>
+          <p class="big"><span id="rate">—</span><small>%</small></p>
+          <div class="gauge" id="gauge" role="img" aria-label="Qualification rate"></div>
+          <p class="fine">Qualify threshold <b id="thr">—</b> points</p>
+        </article>
+        <article class="card center">
+          <h2>Contact confidence</h2>
+          <p class="big"><span id="conf">—</span><small>%</small></p>
+          <ul class="legend" id="conf-legend"></ul>
+          <a class="btn-line" href="#trace">View contacts</a>
+        </article>
+        <article class="card wide">
+          <h2>ICP score by company</h2>
+          <p class="sub">Points from the scoring table against the qualify line. Green qualified; orange was dropped, darker for higher scores. Hover or tap a bar for the reasons.</p>
+          <div class="wide-body">
+            <ul class="score-list" id="score-list"></ul>
+            <div class="chart" id="score-chart"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="row bottom">
+        <div class="pills">
+          <article class="pill dark">
+            <div class="ring" id="ring-pages" aria-hidden="true"></div>
+            <div><h3>Agent loop</h3><p><span data-k="pages">—</span> extra pages read beyond homepages, capped at 4 per company</p></div>
+          </article>
+          <article class="pill light">
+            <div class="ring" id="ring-drafts" aria-hidden="true"></div>
+            <div><h3>Draft quality checks</h3><p id="draft-note">—</p></div>
+          </article>
+        </div>
+        <article class="promo">
+          <div class="promo-top">
+            <span class="promo-brand"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" fill="#c7f5d6"/></svg>In your inbox</span>
+            <a class="promo-arrow" href="#trace" aria-label="Open the decision trace"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></a>
+          </div>
+          <p class="promo-title"><span data-k="emailed">—</span> emails ready for the Growth Lead to review</p>
+          <div class="chips" id="chips"></div>
+        </article>
+      </section>
+
+      <section class="card trace" id="trace">
+        <div class="trace-head">
+          <h2>Company decision trace</h2>
+          <label for="pick">Company</label>
+          <select id="pick"></select>
+        </div>
+        <div class="detail" id="detail"></div>
+      </section>
+
+      <section class="card" id="all">
+        <h2>All companies</h2>
+        <div class="tablewrap">
+          <table class="table">
+            <thead><tr><th>Company</th><th>Outcome</th><th class="num">Score</th><th>Decision</th><th>Contact</th><th>Email subject</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card how" id="how">
+        <h2>How a company is qualified</h2>
+        <ul>
+          <li><b>Hard gates</b> end the assessment: sells compliance automation, already uses a compliance platform (for example a trust centre hosted by Vanta), not software, consumer-only, holds both SOC 2 and ISO 27001, or is public or acquired.</li>
+          <li><b>Points:</b> Series A–C +3, 20–500 people +2, enterprise signals +2, hiring for security or compliance +3, certification in progress +3, regulated industry +2, sells in the EU/UK +1, no certification +2, holds one of SOC 2 / ISO 27001 +1.</li>
+          <li><b>The agent loop</b> reads extra pages (security, careers, pricing, customers) only for questions the homepage left open, at most 4 per company.</li>
+          <li><b>Contacts</b> are ranked by role for the company's size band, then found with Hunter.io. They are shown here by role only; names are in the emails, which go to the Growth Lead's own inbox before any real send.</li>
+        </ul>
+        <p class="foot" id="foot"></p>
+      </section>
+    </main>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>

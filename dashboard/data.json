@@ -1,6 +1,6 @@
 {
  "run": "live-run",
- "generated": "2026-11-19T05:05:08+00:00",
+ "generated": "2026-11-19T05:15:15+00:00",
  "threshold": 5,
  "companies": [
   {
@@ -147,7 +147,7 @@
    "why_now": "Zocks is rolling out to mega RIAs (7 of the 9 Barron's top), whose security reviews of an AI tool that records client meetings are some of the toughest in wealth management.",
    "certifications": "SOC 2",
    "extra_pages_read": 1,
-   "contact_role": "Ceo And Founder",
+   "contact_role": "CEO and Founder",
    "contact_source": "Hunter domain search",
    "contact_confidence": 99,
    "email_subject": "Mega-RIA security reviews and Zocks deals",
