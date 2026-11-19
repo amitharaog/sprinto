@@ -68,7 +68,8 @@ h3 { font-size: 0.95rem; font-weight: 700; }
 .q-scores { grid-row: span 2; display: flex; flex-direction: column; gap: 6px; }
 
 /* Decision trace page */
-.trace-grid { grid-template-columns: 250px minmax(0, 1fr); flex: 1; min-height: 0; align-items: start; }
+.trace-grid { grid-template-columns: 250px minmax(0, 1fr); flex: 1; min-height: 0; align-items: stretch; }
+.trace-grid > .card { min-height: 0; overflow-y: auto; }
 .co-list ul { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .co-list button { all: unset; box-sizing: border-box; width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 9px 10px; border-radius: 10px; cursor: pointer; }
 .co-list button:hover { background: var(--mint-bg); }
@@ -219,6 +220,7 @@ h3 { font-size: 0.95rem; font-weight: 700; }
   .q-scores { grid-row: auto; }
 }
 @media (max-width: 860px) {
+  .trace-grid > .card { overflow: visible; }
   .shell { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); padding: 0; background: var(--mint-bg); }
   .side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px)); background: var(--forest); }
   .brand { border: 0; padding: 0; }
@@ -241,3 +243,18 @@ h3 { font-size: 0.95rem; font-weight: 700; }
 @media (prefers-reduced-motion: no-preference) {
   .gauge path.val, .ring circle.val { transition: stroke-dashoffset 600ms ease-out; }
 }
+
+/* Pipeline value page */
+.v-grid { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); align-items: start; }
+.v-grid .chart { min-height: 120px; }
+.table.compact { min-width: 600px; }
+.table.compact td { padding: 8px 10px; font-size: 0.8rem; }
+.table.compact th { padding: 7px 10px; }
+.assumptions h3 { font-size: 0.8rem; margin: 10px 0 3px; }
+.assumptions p { font-size: 0.8rem; }
+.assumptions code { font-size: 0.75rem; background: var(--mint-bg); padding: 1px 5px; border-radius: 5px; }
+.kv { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 0.8rem; }
+.kv li { display: flex; justify-content: space-between; gap: 10px; }
+.kv li span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; }
+.src { margin-top: 10px; }
+@media (max-width: 1100px) { .v-grid { grid-template-columns: 1fr; } }

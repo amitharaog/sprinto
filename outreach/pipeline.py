@@ -19,6 +19,7 @@ from .llm import LLMError, StructuredLLM
 from .llm_handoff import NeedsAnswer
 from .step1_scrape import Fetcher, normalize_domain, scrape_homepage
 from .step3_qualify import qualify
+from .step3b_value import company_enrichment, estimate_value
 from .step4_poc import find_poc
 from .step5_pain import identify_pain_points
 from .step6_email import draft_email
@@ -46,7 +47,7 @@ def _jsonable(obj: Any) -> Any:
     return obj
 
 
-def review_notes(domain, q, poc, pains, draft, problems) -> str:
+def review_notes(domain, q, poc, pains, draft, problems, value=None) -> str:
     c = poc.contact
     lines = [
         f"Intended recipient: {c.first_name} {c.last_name} <{c.email or 'email not found - verify in Hunter/Apollo'}>"
@@ -55,6 +56,10 @@ def review_notes(domain, q, poc, pains, draft, problems) -> str:
         "", "WHY THIS COMPANY QUALIFIED", q.reason, *[f"  {r}" for r in q.score_breakdown],
         f"  Why now: {q.judgment.why_now_trigger}" if q.judgment else "",
         *([f"  FLAG: {f}" for f in q.flags]),
+        *(["", "DEAL VALUE (ESTIMATE - assumptions in config.py)",
+            f"  ACV ${value.acv_low:,}-${value.acv_high:,}/yr · win probability {value.win_probability:.0%} · "
+            f"expected value ${value.expected_value:,} · 3-year value ${value.three_year_value:,}",
+            *[f"  {line}" for line in value.explanation]] if value else []),
         "", "WHY THIS PERSON", poc.why,
         "", "PAIN POINTS", *[f"  {i + 1}. {p.pain}\n     evidence: {p.evidence}" for i, p in enumerate(pains.points)],
         "", "WHY THE EMAIL IS WRITTEN THIS WAY", draft.why_written_this_way, f"  Hook fact: {draft.hook_fact}",
@@ -126,8 +131,16 @@ class Pipeline:
             res.outcome, res.summary = q.status, q.reason
             return
 
+        # Step 3b - what this prospect could be worth (estimate)
+        enrichment, enrich_note = company_enrichment(domain, config.HUNTER_API_KEY)
+        score = q.score
+        value = estimate_value(domain, q.profile, q.judgment.fit if q.judgment else None, score, enrichment)
+        res.trace["step3b_value"] = {"value": value, "enrichment_note": enrich_note}
+        log(f"    3b value: ACV ${value.acv_low:,}-${value.acv_high:,}, win {value.win_probability:.0%}, "
+            f"expected ${value.expected_value:,}")
+
         # Step 4
-        poc = find_poc(domain, q.profile)
+        poc = find_poc(domain, q.profile, value.headcount)
         res.trace["step4_poc"] = poc
         if not poc.contact:
             res.outcome, res.summary = "no_poc", poc.why
@@ -146,7 +159,7 @@ class Pipeline:
         log(f"    6 drafted in {attempts} attempt(s): \"{draft.subject}\"" + (f" ({len(problems)} checks unresolved)" if problems else ""))
 
         # Step 7
-        notes = review_notes(domain, q, poc, pains, draft, problems)
+        notes = review_notes(domain, q, poc, pains, draft, problems, value)
         msg = build_message(draft.subject, draft.body, notes)
         eml = self.out_dir / "emails" / f"{domain}.eml"
         if self.sending_disabled:
@@ -169,9 +182,13 @@ class Pipeline:
         res.summary = f"{c.first_name} {c.last_name} ({c.position}) - \"{draft.subject}\""
 
     def write_summary(self, results: list[CompanyResult]) -> Path:
-        rows = ["| Domain | Outcome | Summary | Time |", "|---|---|---|---|"]
-        for r in results:
-            rows.append(f"| {r.domain} | {r.outcome} | {r.summary.replace('|', '/')[:160]} | {r.seconds}s |")
+        rows = ["| Domain | Outcome | Est. ACV | Expected value | Summary | Time |", "|---|---|---|---|---|---|"]
+        ev = lambda r: getattr((r.trace.get("step3b_value") or {}).get("value"), "expected_value", -1)
+        for r in sorted(results, key=ev, reverse=True):     # biggest expected opportunities first
+            v = (r.trace.get("step3b_value") or {}).get("value")
+            acv = f"${v.acv_low:,}-${v.acv_high:,}" if v else "-"
+            exp = f"${v.expected_value:,}" if v else "-"
+            rows.append(f"| {r.domain} | {r.outcome} | {acv} | {exp} | {r.summary.replace('|', '/')[:140]} | {r.seconds}s |")
         counts: dict[str, int] = {}
         for r in results:
             counts[r.outcome] = counts.get(r.outcome, 0) + 1

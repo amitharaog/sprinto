@@ -105,6 +105,7 @@ This writes `companies.csv`, `scores.csv` and `loop.csv` to `outputs/<run>/dashb
 | 1 | Scrape | `outreach/step1_scrape.py` | Code | Checks robots.txt. Records bot blocks and doesn't evade them. Strips nav, footer and cookie banners. Drops blocks under 8 words and duplicates. Caps each page at about 2k tokens. Scans raw HTML for cert badges. Finds /security, /careers, /pricing links. 7-day cache |
 | 2 | Extract | `outreach/step2_extract.py` | Claude (structured output) | Named fields left null when unknown, plus a verbatim evidence quote for each filled field |
 | 3 | Qualify | `outreach/step3_qualify.py` | Code decides, Claude judges | The evidence-map loop: code checks which questions are still open and fetches the next page (max 4). Short-circuits stop early. A points table decides. Claude writes the why-now trigger |
+| 3b | Deal value | `outreach/step3b_value.py` | Code | Estimated contract value range, chance of winning and expected value per qualified company, from Hunter company data and an editable price table. Ranks the summary |
 | 4 | Find PoC | `outreach/step4_poc.py` | Code | Hunter.io and/or the Apollo file. Role priority depends on company size. Never picks sales/HR/marketing. Stops instead of guessing |
 | 5 | Pain points | `outreach/step5_pain.py` | Claude | Exactly 2, specific to the role, each quoting a scraped fact |
 | 6 | Draft | `outreach/step6_email.py` | Claude writes, code checks | Name, 60–140 words, one ask, no placeholders or clichés, hook must come from the evidence. Rewrites up to 3 times |

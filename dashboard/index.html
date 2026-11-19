@@ -23,6 +23,8 @@
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg></span>Dashboard</a>
         <a href="#qualification" data-nav="qualification">
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9m7 10V5m7 14v-7" stroke-width="2.4" stroke-linecap="round"/></svg></span>Qualification</a>
+        <a href="#value" data-nav="value">
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M16.5 7.5c-.6-1.4-2.3-2.3-4.5-2.3-2.6 0-4.3 1.3-4.3 3.1 0 4.4 9 2.4 9 6.9 0 1.9-1.9 3.3-4.7 3.3-2.3 0-4.1-1-4.8-2.6" stroke-width="2" stroke-linecap="round" fill="none"/></svg></span>Pipeline value</a>
         <a href="#trace" data-nav="trace">
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5z"/></svg></span>Decision trace</a>
         <a href="#companies" data-nav="companies">
@@ -145,6 +147,60 @@
             <h2>Why companies were dropped</h2>
             <p class="sub">Disqualified companies by the rule that stopped them</p>
             <div class="chart" id="drop-chart"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Pipeline value -->
+      <section class="view" id="view-value" data-title="Pipeline value" hidden>
+        <div class="row kpis">
+          <article class="card kpi">
+            <div>
+              <p class="k-label">Potential annual contract value</p>
+              <p class="k-value" id="v-acv">—</p>
+              <p class="k-delta" id="v-acv-range">—</p>
+            </div>
+          </article>
+          <article class="card kpi">
+            <div>
+              <p class="k-label">Expected pipeline value</p>
+              <p class="k-value" id="v-ev">—</p>
+              <p class="k-delta" id="v-ev-note">—</p>
+            </div>
+          </article>
+          <article class="card kpi">
+            <div>
+              <p class="k-label">3-year value if all close</p>
+              <p class="k-value" id="v-3y">—</p>
+              <p class="k-delta" id="v-3y-note">—</p>
+            </div>
+          </article>
+        </div>
+        <div class="row v-grid">
+          <article class="card">
+            <div class="card-head">
+              <h2>Contract value range by company</h2>
+              <span class="fine">Ranked by expected value</span>
+            </div>
+            <p class="sub">Bar = estimated annual contract range; dot = midpoint. Expected value = midpoint × chance of winning. Click a company for its decision.</p>
+            <div class="chart" id="value-chart"></div>
+            <div class="tablewrap">
+              <table class="table compact">
+                <thead><tr><th>Company</th><th class="num">Employees</th><th class="num">Raised</th><th>New frameworks</th><th class="num">Win</th><th class="num">Expected</th><th class="num">3-year</th></tr></thead>
+                <tbody id="value-rows"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="card assumptions">
+            <h2>Assumptions</h2>
+            <p class="sub">Estimates from public benchmarks, editable in <code>config.py</code>. Replace with Sprinto's price book.</p>
+            <h3>First framework, per year</h3>
+            <ul class="kv" id="a-price"></ul>
+            <h3>Each extra framework</h3>
+            <p id="a-uplift">—</p>
+            <h3>Chance of winning (first cold email)</h3>
+            <ul class="kv" id="a-win"></ul>
+            <p class="fine src" id="a-ret">—</p>
           </article>
         </div>
       </section>

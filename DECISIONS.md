@@ -81,6 +81,22 @@ Sprinto's brief says: *B2B SaaS, usually Series A–C, either preparing for an a
 
 ---
 
+## 3d. What a prospect could be worth (step 3b, `step3b_value.py`)
+
+**These are estimates, not forecasts.** They exist to rank prospects so the Growth Lead works the biggest opportunities first. Every input sits in `config.py` ("deal value") to be replaced with Sprinto's own price book.
+
+| Input | Where it comes from | Why |
+|---|---|---|
+| Company size | Website headcount, else Hunter.io Company Enrichment (employees, funding raised) | Price scales with size |
+| Frameworks in scope | SOC 2 + ISO 27001 always; GDPR if it sells in the EU/UK; HIPAA if health data. Each marked *held* or *new* | What Sprinto would sell or take over |
+| First-framework price | 1–50 people $6k–$10k, 51–250 $10k–$15k, 251–500 $15k–$25k, 501+ $25k–$45k a year | Vendr-based Sprinto median ~$15k/yr; Vanta/Drata market bands sit higher, and Sprinto is positioned below them |
+| Extra frameworks | +40% (low case) to +60% (high case) each | Guides report ISO 27001 on top of SOC 2 adds 40–70% |
+| Chance of winning | Fit strong 8%, moderate 5%, weak 2%, +1 point per ICP point above the threshold | A starting guess for "first cold email to closed deal"; calibrate from real outcomes |
+| Expected value | Midpoint contract value × chance of winning | Comparable across prospects |
+| 3-year value | Midpoint × (1 + 0.9 + 0.81) | 90% yearly retention |
+
+Hunter's headcount also feeds the contact ranking's size band when the website doesn't state one.
+
 ## 4. Why this person (`step4_poc.py`)
 
 Who owns the SOC 2 problem changes as a company grows:

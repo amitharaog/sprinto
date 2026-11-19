@@ -17,6 +17,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+from . import config as cfg
 from .config import QUALIFY_SCORE_THRESHOLD as QUALIFY_THRESHOLD
 
 STAGES = ["Scraped", "Qualified", "Contact found", "Emailed"]
@@ -65,6 +66,7 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
         prof = t.get("step2_profile") or {}
         poc = (t.get("step4_poc") or {}).get("contact") or {}
         draft = (t.get("step6_email") or {}).get("draft") or {}
+        val = (t.get("step3b_value") or {}).get("value") or {}
         outcome = "emailed" if r["domain"] in sent else r["outcome"]
         stage = ("Emailed" if outcome == "emailed" else
                  "Contact found" if poc else
@@ -88,6 +90,18 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
             "hook_fact": draft.get("hook_fact", ""),
             "draft_attempts": (t.get("step6_email") or {}).get("attempts", ""),
             "seconds": r.get("seconds", ""),
+            "headcount": val.get("headcount") or "",
+            "headcount_source": val.get("headcount_source", ""),
+            "raised_usd": val.get("raised_usd") or "",
+            "frameworks_new": "; ".join(f["name"] for f in val.get("frameworks", []) if f["status"] == "new"),
+            "frameworks_held": "; ".join(f["name"] for f in val.get("frameworks", []) if f["status"] == "held"),
+            "acv_low": val.get("acv_low", ""),
+            "acv_high": val.get("acv_high", ""),
+            "acv_mid": val.get("acv_mid", ""),
+            "win_probability": val.get("win_probability", ""),
+            "expected_value": val.get("expected_value", ""),
+            "three_year_value": val.get("three_year_value", ""),
+            "value_explanation": " | ".join(val.get("explanation", [])),
         })
         for line in q.get("score_breakdown", []):
             pts, why = _points(line)
@@ -100,7 +114,14 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
         site_dir.mkdir(parents=True, exist_ok=True)
         (site_dir / "data.json").write_text(json.dumps(
             {"run": run_dir.name, "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-             "threshold": QUALIFY_THRESHOLD, "companies": companies, "scores": scores, "loop": loop},
+             "threshold": QUALIFY_THRESHOLD, "companies": companies, "scores": scores, "loop": loop,
+             "value_assumptions": {
+                 "price_first_framework": [{"max_employees": m if m < 10**9 else None, "low": lo, "high": hi}
+                                           for m, lo, hi in cfg.PRICE_FIRST_FRAMEWORK],
+                 "extra_framework_uplift": list(cfg.EXTRA_FRAMEWORK_UPLIFT),
+                 "win_probability": cfg.WIN_PROBABILITY,
+                 "win_probability_per_extra_point": cfg.WIN_PROBABILITY_PER_EXTRA_POINT,
+                 "annual_retention": cfg.ANNUAL_RETENTION}},
             indent=1, ensure_ascii=False))
     for name, rows in (("companies", companies), ("scores", scores), ("loop", loop)):
         with open(out / f"{name}.csv", "w", newline="") as fh:

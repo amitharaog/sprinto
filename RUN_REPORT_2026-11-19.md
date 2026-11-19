@@ -26,6 +26,19 @@ Mode: `--llm handoff`. Claude Code answered the model requests, and the code mad
 
 Hunter usage: 3 domain searches + 3 Email Finder lookups (at most 6 of the free plan's 25/month). All results are cached in `.cache/hunter/`.
 
+## Estimated value of the qualified companies (step 3b)
+
+Estimates from public benchmarks (assumptions in `config.py`), ranked by expected value:
+
+| Company | Size (Hunter) | Raised | New frameworks | Est. contract value / yr | Win chance | Expected value | 3-year value |
+|---|---|---|---|---|---|---|---|
+| RemotePass | 131 | $24.9M | ISO 27001, GDPR | $18k–$33k | 6% | $1,530 | $69k |
+| Uptiq | 193 | $70M | ISO 27001 | $14k–$24k | 8% | $1,520 | $51.5k |
+| Zocks | 203 | $64.3M | ISO 27001 | $14k–$24k | 5% | $950 | $51.5k |
+| **Total** | | | | **$46k–$81k (mid $63.5k)** | | **$4,000** | **$172k** |
+
+Hunter usage for this step: 3 Company Enrichment lookups (cached).
+
 ## Fixes the live run forced (now in the code, with tests)
 1. Link matching used substrings, so `/case-studies/dk-security` was treated as a security page. It now uses URL structure.
 2. A soft 404 ("Page not found" served with HTTP 200) counted as a security page with no certifications. It now counts as a failed fetch.

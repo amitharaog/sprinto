@@ -223,7 +223,10 @@
     left.appendChild(el('h3', null, 'Decision'));
     const dl = el('dl');
     const contact = c.contact_role ? `${c.contact_role} (${c.contact_source}${c.contact_confidence ? `, ${c.contact_confidence}% confidence` : ''})` : '—';
-    [['ICP score', String(+c.icp_score || 0)], ['Model fit', c.fit || '—'], ['Why', c.reason], ['Why now', c.why_now || '—'],
+    const valueRows = c.acv_mid ? [['Est. contract value', `${money(c.acv_low)}–${money(c.acv_high)} a year`],
+      ['Expected value', `${money(c.expected_value)} (${Math.round(c.win_probability * 100)}% chance of winning)`],
+      ['Company size', c.headcount ? `${c.headcount} employees${c.raised_usd ? `, ${money(c.raised_usd)} raised` : ''}` : '—']] : [];
+    [['ICP score', String(+c.icp_score || 0)], ...valueRows, ['Model fit', c.fit || '—'], ['Why', c.reason], ['Why now', c.why_now || '—'],
      ['Certifications', c.certifications || 'None found'], ['Contact', contact], ['Email subject', c.email_subject || '—'], ['Hook', c.hook_fact || '—'],
      ['Draft attempts', c.draft_attempts ? String(c.draft_attempts) : '—']]
       .forEach(([k, v]) => { dl.appendChild(el('dt', null, k)); dl.appendChild(el('dd', null, v)); });
@@ -280,13 +283,94 @@
     }));
   }
 
+  // ---------- pipeline value ----------
+  const money = (v) => {
+    v = +v || 0;
+    if (v >= 1e6) return '$' + (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + 'M';
+    if (v >= 1e4) return '$' + (v / 1e3).toFixed(v >= 1e5 ? 0 : 1).replace(/\.0$/, '') + 'k';
+    return '$' + Math.round(v).toLocaleString('en-US');
+  };
+  function valueRowsData() {
+    return DATA.companies.filter((c) => +c.acv_mid > 0).sort((a, b) => (+b.expected_value) - (+a.expected_value));
+  }
+  function valueTotals() {
+    const rows = valueRowsData(), sum = (k) => rows.reduce((t, c) => t + (+c[k] || 0), 0);
+    return { n: rows.length, low: sum('acv_low'), high: sum('acv_high'), mid: sum('acv_mid'), ev: sum('expected_value'), y3: sum('three_year_value') };
+  }
+
+  function drawValue() {
+    const rows = valueRowsData(), v = valueTotals();
+    document.getElementById('v-acv').textContent = money(v.mid);
+    document.getElementById('v-acv-range').textContent = v.n ? `Range ${money(v.low)}–${money(v.high)} a year, ${v.n} qualified` : 'No qualified companies';
+    document.getElementById('v-ev').textContent = money(v.ev);
+    document.getElementById('v-ev-note').textContent = 'Midpoint × chance of winning, summed';
+    document.getElementById('v-3y').textContent = money(v.y3);
+    document.getElementById('v-3y-note').textContent = `Midpoint over 3 years at ${Math.round(DATA.value_assumptions.annual_retention * 100)}% yearly retention`;
+
+    const box = document.getElementById('value-chart');
+    box.replaceChildren();
+    if (!rows.length) { box.appendChild(el('p', { class: 'sub' }, 'No qualified companies to value.')); }
+    else {
+      const W = Math.max(280, box.clientWidth || 600), rowH = 34, top = 18, H = rows.length * rowH + top;
+      const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, height: H, role: 'img',
+        'aria-label': 'Estimated annual contract value by company: ' + rows.map((c) => `${c.company} ${money(c.acv_low)} to ${money(c.acv_high)}`).join(', ') });
+      box.appendChild(svg);
+      const left = Math.min(textWidth(svg, rows.map((c) => c.company), 'strong') + 14, W * 0.3);
+      const ends = rows.map((c) => `${money(c.expected_value)} expected`);
+      const right = textWidth(svg, ends) + 14;
+      const max = Math.max(...rows.map((c) => +c.acv_high)) * 1.08;
+      const x = (val) => left + (val / max) * (W - left - right);
+      const step = max > 60000 ? 20000 : 10000;
+      for (let t = 0; t <= max; t += step) {
+        svg.appendChild(sv('line', { x1: x(t), x2: x(t), y1: top - 4, y2: H, stroke: '#edf3ef' }));
+        svg.appendChild(sv('text', { x: x(t), y: 10, 'text-anchor': 'middle' }, money(t)));
+      }
+      rows.forEach((c, i) => {
+        const y = top + i * rowH, cy = y + rowH / 2;
+        const g = sv('g', { class: 'bar', tabindex: 0, 'aria-label': `${c.company}: ${money(c.acv_low)} to ${money(c.acv_high)} a year, ${money(c.expected_value)} expected` });
+        g.appendChild(sv('text', { x: 0, y: cy + 4, class: 'strong' }, c.company));
+        g.appendChild(sv('rect', { x: x(+c.acv_low), y: cy - 7, width: Math.max(4, x(+c.acv_high) - x(+c.acv_low)), height: 14, rx: 7, fill: C.greenSoft }));
+        g.appendChild(sv('circle', { cx: x(+c.acv_mid), cy, r: 6.5, fill: C.green, stroke: '#fff', 'stroke-width': 2 }));
+        g.appendChild(sv('text', { x: x(+c.acv_high) + 8, y: cy + 4, class: 'strong' }, ends[i]));
+        g.addEventListener('click', () => openTrace(c.domain));
+        g.addEventListener('keydown', (e) => { if (e.key === 'Enter') openTrace(c.domain); });
+        svg.appendChild(g);
+      });
+    }
+
+    document.getElementById('value-rows').replaceChildren(...rows.map((c) => {
+      const tr = el('tr', { tabindex: 0 });
+      tr.append(el('td', null, c.company), el('td', { class: 'num' }, c.headcount ? String(c.headcount) : '—'),
+        el('td', { class: 'num' }, c.raised_usd ? money(c.raised_usd) : '—'), el('td', null, c.frameworks_new || '—'),
+        el('td', { class: 'num' }, `${Math.round(c.win_probability * 100)}%`), el('td', { class: 'num' }, money(c.expected_value)),
+        el('td', { class: 'num' }, money(c.three_year_value)));
+      tr.addEventListener('click', () => openTrace(c.domain));
+      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') openTrace(c.domain); });
+      return tr;
+    }));
+
+    const a = DATA.value_assumptions;
+    let prev = 0;
+    document.getElementById('a-price').replaceChildren(...a.price_first_framework.map((b) => {
+      const label = b.max_employees ? `${prev + 1}–${b.max_employees} employees` : `${prev + 1}+ employees`;
+      prev = b.max_employees || prev;
+      const li = el('li'); li.append(el('span', null, label), el('span', null, `$${b.low / 1000}k–$${b.high / 1000}k`)); return li;
+    }));
+    document.getElementById('a-uplift').textContent = `+${Math.round(a.extra_framework_uplift[0] * 100)}% (low case) to +${Math.round(a.extra_framework_uplift[1] * 100)}% (high case) of the first-framework price`;
+    document.getElementById('a-win').replaceChildren(...Object.entries(a.win_probability).map(([fit, p]) => {
+      const li = el('li'); li.append(el('span', null, `Fit judged ${fit}`), el('span', null, `${Math.round(p * 100)}%`)); return li;
+    }), (() => { const li = el('li'); li.append(el('span', null, 'Each ICP point above the threshold'), el('span', null, `+${Math.round(a.win_probability_per_extra_point * 100)} pt`)); return li; })());
+    document.getElementById('a-ret').textContent = `3-year value keeps ${Math.round(a.annual_retention * 100)}% of customers each year. Benchmarks: Vendr-based Sprinto median ~$15k/yr; ISO 27001 on SOC 2 adds 40–70%. Company size and funding from Hunter.io.`;
+  }
+
   // ---------- pages ----------
-  const VIEWS = ['dashboard', 'qualification', 'trace', 'companies', 'how'];
+  const VIEWS = ['dashboard', 'qualification', 'value', 'trace', 'companies', 'how'];
   let T = null;
 
   const LEDES = {
     dashboard: () => [el('b', null, String(T.qualified)), ` of ${T.researched} companies fit Sprinto's ICP; `, el('b', null, String(T.emailed)), ` personalised email${T.emailed === 1 ? ' is' : 's are'} waiting for review.`],
     qualification: () => [`Every company is scored against the ICP; `, el('b', null, String(T.dropped)), ` were dropped and `, el('b', null, String(T.qualified)), ` qualified at ${DATA.threshold}+ points.`],
+    value: () => { const v = valueTotals(); return v.n ? ['Estimated business if these prospects close: ', el('b', null, money(v.mid)), ` a year across ${v.n} qualified compan${v.n === 1 ? 'y' : 'ies'}, `, el('b', null, money(v.ev)), ' expected after win odds.'] : ['No qualified companies to value in this run.']; },
     trace: () => ['Every decision the system made for one company: why it qualified, who to contact, and what the agent read.'],
     companies: () => [el('b', null, String(T.researched)), ' companies in this run. Click a row to open its decision.'],
     how: () => ['The 7 steps, the ICP rules and where the numbers come from.'],
@@ -306,6 +390,7 @@
       hbars(document.getElementById('drop-chart'), drops, (i) => mix(C.orange, C.orangeSoft, Math.min(1, i * 0.35)),
         'Disqualified companies by reason: ' + drops.map((r) => `${r.label} ${r.value}`).join(', '));
     }
+    if (name === 'value') drawValue();
     if (name === 'trace') { drawCompanyList(); drawDetail(); }
     if (name === 'companies') drawTable();
   }

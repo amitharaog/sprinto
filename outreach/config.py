@@ -60,3 +60,22 @@ SPRINTO_FACTS = [
     "One set of controls maps across frameworks, so adding ISO 27001 after SOC 2 reuses most of the work.",
     "It helps teams answer enterprise security questionnaires faster with a ready trust/compliance posture.",
 ]
+
+# --- Step 3b: deal value (ESTIMATES) -----------------------------------------
+# Sprinto doesn't publish prices. These are assumptions from public third-party
+# benchmarks (Nov 2026) - replace them with Sprinto's own price book when you have it.
+#   * Vendr-based median for Sprinto ~ $15k/yr; reported ranges $11.5k-$19.3k (underdefense.com, smartsuite.com)
+#   * Single framework ~ $6k-$10k/yr for small companies (orbiqhq.com, complyjet.com)
+#   * Market (Vanta/Drata) by size: <50 ppl $7.5k-$15k, 51-200 $15k-$30k, 200-500 $30k-$55k (cipherssecurity.com)
+#   * Adding ISO 27001 to SOC 2 typically adds 40-70% to the platform fee (cipherssecurity.com)
+# Sprinto is positioned below Vanta/Drata, so its bands sit lower than the market ones.
+PRICE_FIRST_FRAMEWORK = [            # (max employees, low $/yr, high $/yr) for the first framework
+    (50, 6_000, 10_000),
+    (250, 10_000, 15_000),
+    (500, 15_000, 25_000),
+    (10**9, 25_000, 45_000),
+]
+EXTRA_FRAMEWORK_UPLIFT = (0.40, 0.60)  # each extra framework adds 40% (low case) to 60% (high case)
+WIN_PROBABILITY = {"strong": 0.08, "moderate": 0.05, "weak": 0.02}  # first cold touch -> closed deal; calibrate from real outcomes
+WIN_PROBABILITY_PER_EXTRA_POINT = 0.01  # +1 percentage point per ICP point above the threshold
+ANNUAL_RETENTION = 0.90               # for the 3-year value: year1 + 0.9 + 0.81

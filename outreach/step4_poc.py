@@ -72,8 +72,8 @@ class PocResult:
     source_notes: list[str] = field(default_factory=list)
 
 
-def size_band(p: CompanyProfile) -> SizeBand:
-    hc = p.headcount_estimate
+def size_band(p: CompanyProfile, headcount: Optional[int] = None) -> SizeBand:
+    hc = p.headcount_estimate or headcount     # website first, then Hunter's company data
     if hc is not None:
         return "small" if hc <= 50 else "mid" if hc <= 500 else "large"
     if p.funding_stage in ("pre_seed", "seed", "series_a", "bootstrapped"):
@@ -195,8 +195,8 @@ def rank(contacts: list[Contact], band: SizeBand) -> list[Contact]:
     return sorted(ranked, key=lambda c: c.rank_score, reverse=True)
 
 
-def find_poc(domain: str, profile: CompanyProfile) -> PocResult:
-    band = size_band(profile)
+def find_poc(domain: str, profile: CompanyProfile, headcount: Optional[int] = None) -> PocResult:
+    band = size_band(profile, headcount)
     notes: list[str] = []
     pool: list[Contact] = []
 
@@ -231,7 +231,7 @@ def find_poc(domain: str, profile: CompanyProfile) -> PocResult:
         if reachable:                      # an email we can't deliver is no use: take the best reachable match
             skipped, best = best, reachable[0]
     order = " > ".join(sorted(ROLE_POINTS[band], key=ROLE_POINTS[band].get, reverse=True))
-    why = (f"Company size band '{band}' (headcount {profile.headcount_estimate or 'unknown'}, stage "
+    why = (f"Company size band '{band}' (headcount {profile.headcount_estimate or headcount or 'unknown'}, stage "
            f"{profile.funding_stage or 'unknown'}) -> role priority {order}. "
            f"{best.first_name} {best.last_name} ({best.position}) is the top '{best.role_bucket}' match"
            f"{f' with Hunter confidence {best.confidence}%' if best.confidence else ''}, source: {best.source}."
