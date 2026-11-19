@@ -16,20 +16,23 @@ Mode: `--llm handoff`. Claude Code answered the model requests, and the code mad
 | humanly.io | Disqualified | Score 4. HR data (+2) and no certification (+2), but no enterprise or stage signals; /security was a soft 404 | /careers, /pulses |
 | procuros.io | Disqualified | Score 3. Selling in the EU is the only pressure signal, and they don't hire publicly | /careers, /de/careers |
 
-## Contacts (chosen by role, using the size-band rules)
+## Contacts (chosen by role, using the size-band rules, then Hunter.io)
 
-| Company | Role chosen | Others considered | Rule |
+| Company | Role chosen | Address | Why |
 |---|---|---|---|
-| uptiq.ai | CTO | COO, CEO, General Counsel (no matching role bucket) | Mid band: security > compliance > **tech exec** > ops > founder. No security lead is named on the site |
-| zocks.io | CTO & co-founder | CEO & co-founder | Mid band: tech exec ranks above founder-CEO |
-| remotepass.com | Co-founder & CEO | none | The only named leader. Flagged: the email address still needs verifying in Hunter or Apollo |
+| uptiq.ai | CTO | Hunter Email Finder, 95% | Mid band: tech exec ranks above COO/CEO. Hunter's domain search didn't list the CTO, so Email Finder looked up the name taken from the company's team page |
+| remotepass.com | Director of Engineering | Hunter domain search, 79% | Hunter found an engineering leader, who outranks the CEO (the first manual pick) for a mid-size company |
+| zocks.io | CEO & co-founder | Hunter domain search, 99% | The CTO & co-founder ranks higher, but Hunter has no address for them, so the best-ranked reachable person was chosen |
+
+Hunter usage: 3 domain searches + 3 Email Finder lookups (at most 6 of the free plan's 25/month). All results are cached in `.cache/hunter/`.
 
 ## Fixes the live run forced (now in the code, with tests)
 1. Link matching used substrings, so `/case-studies/dk-security` was treated as a security page. It now uses URL structure.
 2. A soft 404 ("Page not found" served with HTTP 200) counted as a security page with no certifications. It now counts as a failed fetch.
 3. "ISO/IEC 27001" wasn't recognised as ISO 27001. The label is now normalised.
-4. New hard gate: a trust centre hosted by a compliance vendor means they already use a competitor, and the check needs no model call.
+4. New hard gate: a trust centre hosted by a compliance vendor means they already use a competitor, and the check needs no model call. On the re-run the Ampersand page had changed its title from "Vanta" to "Ampersand Trust Center", so the check now reads where the page loads its code from (assets.vanta.com), not just the title.
+5. Hunter Email Finder fills in an address for a top-ranked person found by hand; if none is findable, the best-ranked reachable person is chosen and the review notes say so.
 
 ## Known limits of this run
-- Email addresses weren't verified (no Hunter key). The review notes under each email say so.
+- First pass had no Hunter key, so contacts came from team pages without addresses. Re-run with Hunter: all three now have addresses with Hunter confidence scores, and two contacts changed (see above).
 - `procuros.io/careers` and `/de/careers` are the same page in two languages, so one of the stage question's two fetches was wasted.

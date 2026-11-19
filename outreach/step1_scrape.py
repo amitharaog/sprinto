@@ -78,6 +78,7 @@ class Page:
     word_count: int = 0
     cert_mentions: list[str] = field(default_factory=list)   # found in RAW html (incl. footer, alt text)
     links: dict[str, list[str]] = field(default_factory=dict)  # kind -> candidate URLs
+    platform_assets: list[str] = field(default_factory=list)  # compliance vendors serving this page's scripts/styles
     fetched_with: str = "requests"
     from_cache: bool = False
 
@@ -158,6 +159,24 @@ def find_cert_mentions(html: str) -> list[str]:
     alt_text = " ".join(img.get("alt", "") + " " + img.get("title", "") for img in soup.find_all("img"))
     haystack = soup.get_text(" ") + " " + alt_text
     return [name for name, pat in CERT_PATTERNS.items() if re.search(pat, haystack, re.I)]
+
+
+COMPLIANCE_VENDOR_HOSTS = {"vanta.com": "Vanta", "drata.com": "Drata", "secureframe.com": "Secureframe",
+                           "thoropass.com": "Thoropass", "scrut.io": "Scrut", "scytale.ai": "Scytale",
+                           "sprinto.com": "Sprinto", "hyperproof.io": "Hyperproof"}
+
+
+def find_platform_assets(html: str) -> list[str]:
+    """Which compliance vendors serve this page's scripts, styles or frames - a hosted trust centre
+    loads its code from the vendor (e.g. assets.vanta.com) even when its title is the customer's."""
+    soup = BeautifulSoup(html, "html.parser")
+    found: list[str] = []
+    for tag in soup.find_all(["script", "link", "iframe"]):
+        host = urlparse(urljoin("https://x/", tag.get("src") or tag.get("href") or "")).netloc.lower()
+        for vh, name in COMPLIANCE_VENDOR_HOSTS.items():
+            if (host == vh or host.endswith("." + vh)) and name not in found:
+                found.append(name)
+    return found
 
 
 def clean_html(html: str) -> tuple[str, str]:
@@ -307,6 +326,7 @@ def fetch_page(url: str, kind: str, domain: str, fetcher: Fetcher, use_cache: bo
         url=r.url, kind=kind, ok=True, status=r.status_code, title=title, text=text,
         word_count=len(text.split()), cert_mentions=find_cert_mentions(html),
         links=discover_links(html, r.url, domain), fetched_with=fetched_with,
+        platform_assets=find_platform_assets(html),
     )
     if re.search(r"\b(page not found|404|not found)\b", title, re.I):
         page.ok, page.failure = False, f"soft_404: page says '{title[:60]}'"

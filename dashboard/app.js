@@ -136,7 +136,7 @@
     const dl = el('dl');
     const pill = el('span', { class: 'pill', 'data-o': c.outcome }, LABELS[c.outcome] || c.outcome);
     [['Outcome', pill], ['Domain', c.domain], ['ICP score', String(+c.icp_score || 0)], ['Model fit', c.fit || '—'], ['Why', c.reason], ['Why now', c.why_now || '—'],
-     ['Certifications', c.certifications || 'None found'], ['Contact', c.contact_role ? `${c.contact_role} (${c.contact_source})` : '—'],
+     ['Certifications', c.certifications || 'None found'], ['Contact', c.contact_role ? `${c.contact_role} (${c.contact_source}${c.contact_confidence ? `, ${c.contact_confidence}% confidence` : ''})` : '—'],
      ['Email subject', c.email_subject || '—'], ['Hook', c.hook_fact || '—'], ['Draft attempts', c.draft_attempts ? String(c.draft_attempts) : '—']]
       .forEach(([k, v]) => { dl.appendChild(el('dt', null, k)); const dd = el('dd'); typeof v === 'string' ? (dd.textContent = v) : dd.appendChild(v); dl.appendChild(dd); });
     left.appendChild(dl);

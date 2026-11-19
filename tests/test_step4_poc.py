@@ -59,3 +59,32 @@ def test_find_poc_refuses_to_pick_irrelevant_people(tmp_path, monkeypatch):
     monkeypatch.setattr(s4.config, "MANUAL_CONTACTS_FILE", f)
     r = s4.find_poc("acme.com", CompanyProfile())
     assert r.contact is None and "Not emailing" in r.why
+
+
+def test_email_finder_fills_missing_address_for_top_contact(tmp_path, monkeypatch):
+    monkeypatch.setattr(s4.config, "CACHE_DIR", tmp_path)
+    monkeypatch.setattr(s4.config, "HUNTER_API_KEY", "k")
+    f = tmp_path / "m.json"
+    f.write_text(json.dumps({"acme.com": [{"first_name": "Cy", "last_name": "Lo", "position": "CTO", "email": ""}]}))
+    monkeypatch.setattr(s4.config, "MANUAL_CONTACTS_FILE", f)
+    (tmp_path / "hunter").mkdir()
+    (tmp_path / "hunter" / "acme.com.json").write_text(json.dumps({"data": {"emails": []}}))
+    (tmp_path / "hunter" / "finder-acme-com-cy-lo.json").write_text(json.dumps({"data": {"email": "cy@acme.com", "score": 91}}))
+    r = s4.find_poc("acme.com", CompanyProfile(funding_stage="series_b"))
+    assert r.contact.email == "cy@acme.com" and r.contact.confidence == 91
+    assert "email finder" in r.contact.source
+
+
+def test_unreachable_top_contact_falls_back_to_best_reachable(tmp_path, monkeypatch):
+    monkeypatch.setattr(s4.config, "CACHE_DIR", tmp_path)
+    monkeypatch.setattr(s4.config, "HUNTER_API_KEY", "k")
+    f = tmp_path / "m.json"
+    f.write_text(json.dumps({"acme.com": [{"first_name": "Cy", "last_name": "Lo", "position": "CTO", "email": ""}]}))
+    monkeypatch.setattr(s4.config, "MANUAL_CONTACTS_FILE", f)
+    (tmp_path / "hunter").mkdir()
+    (tmp_path / "hunter" / "acme.com.json").write_text(json.dumps({"data": {"emails": [
+        {"value": "ana@acme.com", "first_name": "Ana", "last_name": "Ray", "position": "CEO & Co-founder", "confidence": 99},
+        {"value": "di@acme.com", "first_name": "Di", "last_name": "Fe", "position": "VP Sales", "confidence": 99}]}}))
+    (tmp_path / "hunter" / "finder-acme-com-cy-lo.json").write_text(json.dumps({"data": {"email": None}}))
+    r = s4.find_poc("acme.com", CompanyProfile(funding_stage="series_b"))
+    assert r.contact.email == "ana@acme.com" and "Cy Lo (CTO) ranked higher" in r.why

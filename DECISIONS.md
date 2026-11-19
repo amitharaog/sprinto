@@ -43,7 +43,7 @@ Sprinto's brief says: *B2B SaaS, usually Series A–C, either preparing for an a
 | Sells to consumers only | Without enterprise buyers, nobody is asking them for SOC 2 |
 | Already holds **both** SOC 2 and ISO 27001 | The core problem is already solved. *Holding just one does **not** disqualify:* adding the second framework is a real expansion pitch, because Sprinto reuses the shared controls |
 | Public or acquired | Outside the Series A–C ICP. Compliance is handled by an established team and bought through procurement |
-| Trust centre hosted by Vanta, Drata, Secureframe, etc. | They already pay for a compliance platform, so this is a displacement deal, not a cold first touch. Detected in code from the security page's title or host. Added after the first live run, where trust.ampersand.ai turned out to be a Vanta trust centre |
+| Trust centre hosted by Vanta, Drata, Secureframe, etc. | They already pay for a compliance platform, so this is a displacement deal, not a cold first touch. Detected in code from where the security page loads its scripts (e.g. assets.vanta.com), then its title or host. Added after the first live run, where trust.ampersand.ai turned out to be a Vanta trust centre |
 
 ### 3b. Points table (`score_profile()`): qualify at **5 or more**
 
@@ -93,6 +93,8 @@ Who owns the SOC 2 problem changes as a company grows:
 
 - At a 40-person startup the CTO or a founder runs the audit personally. At 300 people a security lead usually exists and owns it. At 1,000 people there's a GRC function.
 - Ranking: role points plus Hunter's confidence ÷ 10. Sales, marketing, HR/people, support, design and growth roles are **never** chosen.
+- **Hunter Email Finder** fills in an address when the best-ranked person came from Apollo or a team page without one (one search per person, cached).
+- **An email must be deliverable.** If the best-ranked person still has no address, the best-ranked person who has one is chosen, and the review notes name who was skipped and why.
 - **If nobody fits, the system stops.** It doesn't email "the nearest person with manager in their title" (the L4 failure mode). The outcome is `no_poc`, and the fix is to add the right person to `contacts_manual.json` from Apollo.
 - Hunter's free tier allows 25 searches a month, so every result is cached in `.cache/hunter/`. Re-running a domain uses no searches.
 

@@ -88,3 +88,9 @@ def test_soft_404_is_a_failure(monkeypatch):
     html = "<html><head><title>Page not found | Acme</title></head><body><p>" + "word " * 30 + "</p></body></html>"
     page = s1.fetch_page("https://acme.com/security", "security", "acme.com", FakeFetcher(FakeResp(200, html)), use_cache=False)
     assert not page.ok and page.failure.startswith("soft_404")
+
+
+def test_platform_assets_detects_vendor_hosted_trust_centre():
+    html = '<html><head><title>Acme Trust Center</title><script src="//assets.vanta.com/static/app.js"></script></head><body></body></html>'
+    assert s1.find_platform_assets(html) == ["Vanta"]
+    assert s1.find_platform_assets(HTML) == []

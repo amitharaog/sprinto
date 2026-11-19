@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import re
 import time
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Literal, Optional
 
@@ -135,6 +136,36 @@ def hunter_domain_search(domain: str, api_key: str, session: requests.Session | 
     return contacts, f"{note}: {len(contacts)} named people"
 
 
+def _ascii(s: str) -> str:
+    return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+
+
+def hunter_email_finder(domain: str, first: str, last: str, api_key: str,
+                        session: requests.Session | None = None) -> tuple[str, int | None, str]:
+    """Find one named person's address (Hunter Email Finder). Returns (email, score, note).
+    Used when the best-ranked person came from Apollo / a team page without an email.
+    Cached per person, so a re-run spends no search."""
+    first, last = _ascii(first), _ascii(last)          # "Ákos" -> "Akos": Hunter matches unaccented names
+    key = re.sub(r"[^a-z0-9]+", "-", f"{domain}-{first}-{last}".lower())
+    cache = config.CACHE_DIR / "hunter" / f"finder-{key}.json"
+    if cache.exists():
+        data, note = json.loads(cache.read_text()), "hunter email finder (cached)"
+    else:
+        s = session or requests.Session()
+        try:
+            r = s.get("https://api.hunter.io/v2/email-finder", timeout=20,
+                      params={"domain": domain, "first_name": first, "last_name": last, "api_key": api_key})
+        except requests.RequestException as e:
+            return "", None, f"hunter email finder network error: {type(e).__name__}"
+        if r.status_code != 200:
+            return "", None, f"hunter email finder error {r.status_code}: {r.text[:150]}"
+        data, note = r.json(), "hunter email finder (live)"
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps(data))
+    d = data.get("data") or {}
+    return d.get("email") or "", d.get("score"), note
+
+
 def manual_contacts(domain: str) -> list[Contact]:
     """contacts_manual.json (committed example) + contacts_research.json (git-ignored: real people's
     details from Apollo or public team pages stay off GitHub)."""
@@ -188,9 +219,22 @@ def find_poc(domain: str, profile: CompanyProfile) -> PocResult:
                          "found. Not emailing a random manager - add the right person to contacts_manual.json.",
                          considered, notes)
     best = ranked[0]
+    if not best.email and config.HUNTER_API_KEY:
+        email, score, note = hunter_email_finder(domain, best.first_name, best.last_name, config.HUNTER_API_KEY)
+        notes.append(f"{note}: {email or 'no address found'} for {best.first_name} {best.last_name}")
+        if email:
+            best.email, best.confidence = email, score
+            best.source += " + hunter email finder"
+    skipped = None
+    if not best.email:
+        reachable = [c for c in ranked if c.email]
+        if reachable:                      # an email we can't deliver is no use: take the best reachable match
+            skipped, best = best, reachable[0]
     order = " > ".join(sorted(ROLE_POINTS[band], key=ROLE_POINTS[band].get, reverse=True))
     why = (f"Company size band '{band}' (headcount {profile.headcount_estimate or 'unknown'}, stage "
            f"{profile.funding_stage or 'unknown'}) -> role priority {order}. "
            f"{best.first_name} {best.last_name} ({best.position}) is the top '{best.role_bucket}' match"
-           f"{f' with Hunter confidence {best.confidence}%' if best.confidence else ''}, source: {best.source}.")
+           f"{f' with Hunter confidence {best.confidence}%' if best.confidence else ''}, source: {best.source}."
+           + (f" {skipped.first_name} {skipped.last_name} ({skipped.position}) ranked higher but has no findable "
+              f"email address, so the best-ranked reachable person was chosen." if skipped else ""))
     return PocResult(best, band, why, considered, notes)

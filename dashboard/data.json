@@ -1,6 +1,6 @@
 {
  "run": "live-run",
- "generated": "2026-11-19T04:50:33+00:00",
+ "generated": "2026-11-19T05:05:08+00:00",
  "threshold": 5,
  "companies": [
   {
@@ -16,10 +16,11 @@
    "extra_pages_read": 0,
    "contact_role": "",
    "contact_source": "",
+   "contact_confidence": "",
    "email_subject": "",
    "hook_fact": "",
    "draft_attempts": "",
-   "seconds": 1.3
+   "seconds": 1.2
   },
   {
    "domain": "humanly.io",
@@ -34,10 +35,11 @@
    "extra_pages_read": 3,
    "contact_role": "",
    "contact_source": "",
+   "contact_confidence": "",
    "email_subject": "",
    "hook_fact": "",
    "draft_attempts": "",
-   "seconds": 2.1
+   "seconds": 2.0
   },
   {
    "domain": "kashable.com",
@@ -52,10 +54,11 @@
    "extra_pages_read": 0,
    "contact_role": "",
    "contact_source": "",
+   "contact_confidence": "",
    "email_subject": "",
    "hook_fact": "",
    "draft_attempts": "",
-   "seconds": 0.4
+   "seconds": 0.5
   },
   {
    "domain": "procuros.io",
@@ -70,10 +73,11 @@
    "extra_pages_read": 3,
    "contact_role": "",
    "contact_source": "",
+   "contact_confidence": "",
    "email_subject": "",
    "hook_fact": "",
    "draft_attempts": "",
-   "seconds": 1.6
+   "seconds": 1.5
   },
   {
    "domain": "remotepass.com",
@@ -86,9 +90,10 @@
    "why_now": "RemotePass runs payroll and employment for multinationals like Valmont across 180+ countries; with SOC 2 Type II done, the next enterprise and EU buyer ask is usually ISO 27001.",
    "certifications": "SOC 2 Type II",
    "extra_pages_read": 0,
-   "contact_role": "Co-founder & CEO",
-   "contact_source": "web_research",
-   "email_subject": "ISO 27001 for RemotePass's multinational deals",
+   "contact_role": "Director of Engineering",
+   "contact_source": "Hunter domain search",
+   "contact_confidence": 79,
+   "email_subject": "SOC 2 evidence at RemotePass",
    "hook_fact": "SOC 2 Type II Independently audited security controls",
    "draft_attempts": 1,
    "seconds": 1.6
@@ -105,7 +110,8 @@
    "certifications": "SOC 2 Type 2",
    "extra_pages_read": 1,
    "contact_role": "CTO",
-   "contact_source": "web_research",
+   "contact_source": "company team page + Hunter email finder",
+   "contact_confidence": 95,
    "email_subject": "GovernAI and the next bank security review",
    "hook_fact": "Uptiq Launches GovernAI to Provide Bank-Grade AI Governance for Financial Institutions",
    "draft_attempts": 1,
@@ -124,10 +130,11 @@
    "extra_pages_read": 1,
    "contact_role": "",
    "contact_source": "",
+   "contact_confidence": "",
    "email_subject": "",
    "hook_fact": "",
    "draft_attempts": "",
-   "seconds": 1.7
+   "seconds": 1.8
   },
   {
    "domain": "zocks.io",
@@ -140,12 +147,13 @@
    "why_now": "Zocks is rolling out to mega RIAs (7 of the 9 Barron's top), whose security reviews of an AI tool that records client meetings are some of the toughest in wealth management.",
    "certifications": "SOC 2",
    "extra_pages_read": 1,
-   "contact_role": "CTO and Co-founder",
-   "contact_source": "web_research",
-   "email_subject": "Security reviews from the mega RIAs",
+   "contact_role": "Ceo And Founder",
+   "contact_source": "Hunter domain search",
+   "contact_confidence": 99,
+   "email_subject": "Mega-RIA security reviews and Zocks deals",
    "hook_fact": "Trusted by 5,000+ firms & 7 of the 9 Barron’s top mega RIAs",
    "draft_attempts": 1,
-   "seconds": 1.0
+   "seconds": 1.2
   }
  ],
  "scores": [

@@ -77,10 +77,12 @@ COMPLIANCE_PLATFORMS = ["Vanta", "Drata", "Secureframe", "Thoropass", "Scrut", "
 
 def detect_compliance_platform(pages: list[Page]) -> Optional[str]:
     """A trust centre hosted by a compliance-automation vendor means they already pay for one.
-    Checked in code on the security page's title/host (e.g. trust.acme.com titled 'Vanta')."""
+    Checked in code on where the security page loads its scripts from (assets.vanta.com), then its title/host."""
     for pg in pages:
         if pg.kind != "security" or not pg.ok:
             continue
+        if pg.platform_assets:
+            return pg.platform_assets[0]
         head = (pg.title + " " + pg.url + " " + pg.text[:300]).lower()
         for name in COMPLIANCE_PLATFORMS:
             if re.search(rf"\b{name.lower()}\b", head):

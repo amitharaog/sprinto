@@ -27,6 +27,20 @@ def _points(line: str) -> tuple[int, str]:
     return (int(m.group(1)), m.group(2)) if m else (0, line)
 
 
+def _source_label(src: str) -> str:
+    """'hunter', 'web_research: <url> + hunter email finder' -> short, human labels."""
+    parts = []
+    if src.startswith("hunter"):
+        parts.append("Hunter domain search")
+    elif src.startswith("web_research"):
+        parts.append("company team page")
+    elif src:
+        parts.append(src.split(":")[0].replace("_", " "))
+    if "email finder" in src:
+        parts.append("Hunter email finder")
+    return " + ".join(parts)
+
+
 def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
     out = run_dir / "dashboard"
     out.mkdir(exist_ok=True)
@@ -55,7 +69,8 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
             "certifications": "; ".join(prof.get("certifications_held") or []),
             "extra_pages_read": q.get("extra_fetches", 0),
             "contact_role": poc.get("position", ""),
-            "contact_source": (poc.get("source") or "").split(":")[0],
+            "contact_source": _source_label(poc.get("source") or ""),
+            "contact_confidence": poc.get("confidence") or "",
             "email_subject": draft.get("subject", ""),
             "hook_fact": draft.get("hook_fact", ""),
             "draft_attempts": (t.get("step6_email") or {}).get("attempts", ""),
