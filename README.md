@@ -87,6 +87,15 @@ Contacts found by hand (in Apollo or on public team pages) can go in `contacts_r
 
 ---
 
+## Dashboard
+After a run, export its decision traces for the outreach dashboard:
+```bash
+python -m outreach.export_dashboard outputs/<run> --sent uptiq.ai,zocks.io
+```
+This writes `companies.csv`, `scores.csv` and `loop.csv` to `outputs/<run>/dashboard/`. Contacts appear by role only. Upload the three files to the dashboard to refresh it.
+
+---
+
 ## What each step does
 
 | # | Step | File | Model or code? | Key choices |
