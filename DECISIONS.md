@@ -97,6 +97,21 @@ Sprinto's brief says: *B2B SaaS, usually Series A–C, either preparing for an a
 
 Hunter's headcount also feeds the contact ranking's size band when the website doesn't state one.
 
+## 3e. Could a dropped company be a lead later? (step 3c, `step3c_future.py`)
+
+A "no" today is often "not yet", so every company that doesn't qualify gets a follow-up category, decided in code:
+
+| Category | When | Re-check | What to watch for |
+|---|---|---|---|
+| **Re-check now** | 1–2 points short, and company data (Hunter.io) already covers the gap | Before the next run | Confirm the data, then re-score |
+| **Near miss** | 1–2 points short, nothing rules it out | 3 months (1 short) or 6 months (2 short) | The missing signals that would close the gap: a Series A–C round, a compliance hire, "SOC 2 in progress", an enterprise plan |
+| **Watch for renewal** | Already runs compliance on a competitor (e.g. a Vanta-hosted trust centre) | 10 months | Their contract renewal, a framework the current tool handles poorly |
+| **Watch for a new framework** | Already holds SOC 2 and ISO 27001 | 12 months | HIPAA, ISO 42001 for AI, a GDPR programme |
+| **Needs a human look** | The website didn't say whether it's B2B SaaS | 1 month | A clearer product page |
+| **Not a fit** | Competitor, not software, consumer-only, public or acquired | Never | - |
+
+**Why company data isn't used in the score itself:** the qualifier scores only what a company says about itself, so every point can be quoted. Third-party data (Hunter.io headcount and funding) can be stale. In this run Hunter showed Farseer at $1.5M raised, while news reports a €6.07M Series A. So it only flags a company for a human re-check, and never sends an email on its own.
+
 ## 4. Why this person (`step4_poc.py`)
 
 Who owns the SOC 2 problem changes as a company grows:

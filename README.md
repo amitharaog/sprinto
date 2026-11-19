@@ -106,6 +106,7 @@ This writes `companies.csv`, `scores.csv` and `loop.csv` to `outputs/<run>/dashb
 | 2 | Extract | `outreach/step2_extract.py` | Claude (structured output) | Named fields left null when unknown, plus a verbatim evidence quote for each filled field |
 | 3 | Qualify | `outreach/step3_qualify.py` | Code decides, Claude judges | The evidence-map loop: code checks which questions are still open and fetches the next page (max 4). Short-circuits stop early. A points table decides. Claude writes the why-now trigger |
 | 3b | Deal value | `outreach/step3b_value.py` | Code | Estimated contract value range, chance of winning and expected value per qualified company, from Hunter company data and an editable price table. Ranks the summary |
+| 3c | Future leads | `outreach/step3c_future.py` | Code | For every company that didn't qualify: near miss, watch for renewal, re-check now or not a fit, with what's missing, what to watch for and a re-check date |
 | 4 | Find PoC | `outreach/step4_poc.py` | Code | Hunter.io and/or the Apollo file. Role priority depends on company size. Never picks sales/HR/marketing. Stops instead of guessing |
 | 5 | Pain points | `outreach/step5_pain.py` | Claude | Exactly 2, specific to the role, each quoting a scraped fact |
 | 6 | Draft | `outreach/step6_email.py` | Claude writes, code checks | Name, 60–140 words, one ask, no placeholders or clichés, hook must come from the evidence. Rewrites up to 3 times |

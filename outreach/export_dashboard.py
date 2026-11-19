@@ -67,6 +67,7 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
         poc = (t.get("step4_poc") or {}).get("contact") or {}
         draft = (t.get("step6_email") or {}).get("draft") or {}
         val = (t.get("step3b_value") or {}).get("value") or {}
+        fut = (t.get("step3c_future") or {}).get("future") or {}
         outcome = "emailed" if r["domain"] in sent else r["outcome"]
         stage = ("Emailed" if outcome == "emailed" else
                  "Contact found" if poc else
@@ -102,6 +103,15 @@ def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
             "expected_value": val.get("expected_value", ""),
             "three_year_value": val.get("three_year_value", ""),
             "value_explanation": " | ".join(val.get("explanation", [])),
+            "future_category": fut.get("category", ""),
+            "future_label": fut.get("label", ""),
+            "future_priority": fut.get("priority", ""),
+            "recheck_date": fut.get("recheck_date") or "",
+            "points_short": fut.get("gap") if fut.get("gap") is not None else "",
+            "would_qualify_if": " | ".join(fut.get("would_qualify_if", [])),
+            "watch_for": " | ".join(fut.get("watch_for", [])),
+            "company_data": " | ".join(fut.get("evidence_now", [])),
+            "future_note": fut.get("note", ""),
         })
         for line in q.get("score_breakdown", []):
             pts, why = _points(line)

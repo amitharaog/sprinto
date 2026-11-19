@@ -226,7 +226,9 @@
     const valueRows = c.acv_mid ? [['Est. contract value', `${money(c.acv_low)}–${money(c.acv_high)} a year`],
       ['Expected value', `${money(c.expected_value)} (${Math.round(c.win_probability * 100)}% chance of winning)`],
       ['Company size', c.headcount ? `${c.headcount} employees${c.raised_usd ? `, ${money(c.raised_usd)} raised` : ''}` : '—']] : [];
-    [['ICP score', String(+c.icp_score || 0)], ...valueRows, ['Model fit', c.fit || '—'], ['Why', c.reason], ['Why now', c.why_now || '—'],
+    const futureRows = c.future_category && c.future_category !== 'lead_now'
+      ? [['Future lead', `${c.future_label}${c.recheck_date ? ` · re-check ${fmtDate(c.recheck_date)}` : ''}`]] : [];
+    [['ICP score', String(+c.icp_score || 0)], ...valueRows, ...futureRows, ['Model fit', c.fit || '—'], ['Why', c.reason], ['Why now', c.why_now || '—'],
      ['Certifications', c.certifications || 'None found'], ['Contact', contact], ['Email subject', c.email_subject || '—'], ['Hook', c.hook_fact || '—'],
      ['Draft attempts', c.draft_attempts ? String(c.draft_attempts) : '—']]
       .forEach(([k, v]) => { dl.appendChild(el('dt', null, k)); dl.appendChild(el('dd', null, v)); });
@@ -363,14 +365,69 @@
     document.getElementById('a-ret').textContent = `3-year value keeps ${Math.round(a.annual_retention * 100)}% of customers each year. Benchmarks: Vendr-based Sprinto median ~$15k/yr; ISO 27001 on SOC 2 adds 40–70%. Company size and funding from Hunter.io.`;
   }
 
+  // ---------- future leads ----------
+  function futureGroups() {
+    const cs = DATA.companies.filter((c) => c.future_category && c.future_category !== 'lead_now');
+    return {
+      all: cs,
+      now: cs.filter((c) => c.future_label === 'Re-check now'),
+      watch: cs.filter((c) => ['near_miss', 'renewal_watch', 'expansion_watch', 'manual_review'].includes(c.future_category) && c.future_label !== 'Re-check now'),
+      no: cs.filter((c) => c.future_category === 'not_a_fit'),
+    };
+  }
+  const fmtDate = (iso) => iso ? new Date(iso + 'T00:00:00Z').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '—';
+
+  function drawFuture() {
+    const g = futureGroups();
+    document.getElementById('f-now').textContent = g.now.length;
+    document.getElementById('f-now-note').replaceChildren(el('b', null, '↗ company data'), document.createTextNode(' already closes the gap'));
+    document.getElementById('f-watch').textContent = g.watch.length;
+    document.getElementById('f-watch-note').textContent = 'Re-check on a date, or when a trigger fires';
+    document.getElementById('f-no').textContent = g.no.length;
+    document.getElementById('f-no-note').replaceChildren(el('b', null, '↘ ruled out'), document.createTextNode(' by a hard gate'));
+
+    const order = { high: 0, medium: 1, low: 2, none: 3 };
+    const cards = [...g.all].sort((a, b) => (order[a.future_priority] ?? 9) - (order[b.future_priority] ?? 9) || (+b.icp_score || 0) - (+a.icp_score || 0));
+    document.getElementById('future-cards').replaceChildren(...cards.map((c) => {
+      const card = el('article', { class: 'fcard', 'data-p': c.future_priority || 'none' });
+      const head = el('div', { class: 'fhead' });
+      head.append(el('h3', null, c.company), el('span', { class: 'ftag' }, c.future_label));
+      card.appendChild(head);
+      const meta = el('p', { class: 'fmeta' });
+      const bits = [`Score ${+c.icp_score || 0}`];
+      if (c.points_short !== '' && c.points_short != null) bits.push(`${c.points_short} short`);
+      if (c.future_label === 'Re-check now') bits.push('re-check now');
+      else if (c.recheck_date) bits.push(`re-check ${fmtDate(c.recheck_date)}`);
+      meta.textContent = bits.join(' · ');
+      card.appendChild(meta);
+      card.appendChild(el('p', { class: 'fnote' }, c.future_note));
+      const list = (title, text, max) => {
+        const items = (text || '').split(' | ').filter(Boolean).slice(0, max);
+        if (!items.length) return;
+        card.appendChild(el('h4', null, title));
+        const ul = el('ul'); items.forEach((t) => ul.appendChild(el('li', null, t))); card.appendChild(ul);
+      };
+      list('Company data', c.company_data, 2);
+      // Near misses: each trigger paired with the points it would add (any one closes the gap)
+      const pts = (c.would_qualify_if || '').split(' | ').map((w) => (w.match(/\(\+\d+\)$/) || [''])[0]);
+      const watch = (c.watch_for || '').split(' | ').filter(Boolean).map((w, i) => (pts[i] ? `${w} ${pts[i]}` : w)).join(' | ');
+      list(pts.some(Boolean) ? 'Watch for (any one qualifies it)' : 'Watch for', watch, 3);
+      const open = el('button', { class: 'link', type: 'button' }, 'Open decision →');
+      open.addEventListener('click', () => openTrace(c.domain));
+      card.appendChild(open);
+      return card;
+    }));
+  }
+
   // ---------- pages ----------
-  const VIEWS = ['dashboard', 'qualification', 'value', 'trace', 'companies', 'how'];
+  const VIEWS = ['dashboard', 'qualification', 'value', 'future', 'trace', 'companies', 'how'];
   let T = null;
 
   const LEDES = {
     dashboard: () => [el('b', null, String(T.qualified)), ` of ${T.researched} companies fit Sprinto's ICP; `, el('b', null, String(T.emailed)), ` personalised email${T.emailed === 1 ? ' is' : 's are'} waiting for review.`],
     qualification: () => [`Every company is scored against the ICP; `, el('b', null, String(T.dropped)), ` were dropped and `, el('b', null, String(T.qualified)), ` qualified at ${DATA.threshold}+ points.`],
     value: () => { const v = valueTotals(); return v.n ? ['Estimated business if these prospects close: ', el('b', null, money(v.mid)), ` a year across ${v.n} qualified compan${v.n === 1 ? 'y' : 'ies'}, `, el('b', null, money(v.ev)), ' expected after win odds.'] : ['No qualified companies to value in this run.']; },
+    future: () => { const f = futureGroups(); return ['Companies that didn\'t qualify this time but could later: ', el('b', null, String(f.now.length)), ' to re-check now, ', el('b', null, String(f.watch.length)), ' to watch.']; },
     trace: () => ['Every decision the system made for one company: why it qualified, who to contact, and what the agent read.'],
     companies: () => [el('b', null, String(T.researched)), ' companies in this run. Click a row to open its decision.'],
     how: () => ['The 7 steps, the ICP rules and where the numbers come from.'],
@@ -391,6 +448,7 @@
         'Disqualified companies by reason: ' + drops.map((r) => `${r.label} ${r.value}`).join(', '));
     }
     if (name === 'value') drawValue();
+    if (name === 'future') drawFuture();
     if (name === 'trace') { drawCompanyList(); drawDetail(); }
     if (name === 'companies') drawTable();
   }

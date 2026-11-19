@@ -39,6 +39,18 @@ Estimates from public benchmarks (assumptions in `config.py`), ranked by expecte
 
 Hunter usage for this step: 3 Company Enrichment lookups (cached).
 
+## Future leads (step 3c)
+
+| Company | Category | Why | Next step |
+|---|---|---|---|
+| Farseer | Re-check now | Score 4, 1 short. Hunter: 68 employees (+2 if confirmed) | Confirm size and the reported Series A, then re-score |
+| Humanly | Re-check now | Score 4, 1 short. Hunter: 80 employees, $24.9M raised | Confirm size, then re-score |
+| Procuros | Re-check now | Score 3, 2 short. Hunter: 60 employees, $31.3M raised | Confirm size, then re-score |
+| Ampersand | Watch for renewal | Already on Vanta | Re-check Sep 2027, around their likely renewal |
+| Kashable | Not a fit | Consumer lender, not SaaS | None |
+
+All three near misses fall short only because their websites don't state headcount. Company data suggests they would qualify. Scoring third-party data directly would make the qualifier less strict, but also less verifiable; for now it's a human re-check.
+
 ## Fixes the live run forced (now in the code, with tests)
 1. Link matching used substrings, so `/case-studies/dk-security` was treated as a security page. It now uses URL structure.
 2. A soft 404 ("Page not found" served with HTTP 200) counted as a security page with no certifications. It now counts as a failed fetch.

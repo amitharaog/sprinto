@@ -20,6 +20,7 @@ from .llm_handoff import NeedsAnswer
 from .step1_scrape import Fetcher, normalize_domain, scrape_homepage
 from .step3_qualify import qualify
 from .step3b_value import company_enrichment, estimate_value
+from .step3c_future import assess_future
 from .step4_poc import find_poc
 from .step5_pain import identify_pain_points
 from .step6_email import draft_email
@@ -128,8 +129,18 @@ class Pipeline:
                                                   for p in q.pages]}
         log(f"    2-3 {q.status} (score {q.score}, {q.extra_fetches} extra pages): {q.reason[:110]}")
         if q.status in ("disqualified", "manual_review"):
+            # Step 3c - could it be a lead later? Company data only for near misses (1-2 points short).
+            enrichment, enrich_note = {}, "not needed"
+            near = q.reason.startswith("ICP score") and q.score >= config.QUALIFY_SCORE_THRESHOLD - 2
+            if near:
+                enrichment, enrich_note = company_enrichment(domain, config.HUNTER_API_KEY)
+            fut = assess_future(q.profile, q.status, q.reason, q.score, enrichment)
+            res.trace["step3c_future"] = {"future": fut, "enrichment_note": enrich_note}
+            log(f"    3c future: {fut.label}" + (f", re-check {fut.recheck_date}" if fut.recheck_date else ""))
             res.outcome, res.summary = q.status, q.reason
             return
+        res.trace["step3c_future"] = {"future": assess_future(q.profile, q.status, q.reason, q.score),
+                                      "enrichment_note": "not needed"}
 
         # Step 3b - what this prospect could be worth (estimate)
         enrichment, enrich_note = company_enrichment(domain, config.HUNTER_API_KEY)
@@ -195,6 +206,14 @@ class Pipeline:
         text = (f"# Outreach run - {datetime.now():%Y-%m-%d %H:%M}\n\n"
                 + ", ".join(f"**{k}**: {v}" for k, v in counts.items()) + "\n\n" + "\n".join(rows)
                 + "\n\nFull decision trace per company: `<domain>.json`. Drafts: `emails/<domain>.eml`.\n")
+        futures = [(r, (r.trace.get("step3c_future") or {}).get("future")) for r in results]
+        futures = [(r, f) for r, f in futures if f and f.category not in ("lead_now", "not_a_fit")]
+        if futures:
+            order = {"high": 0, "medium": 1, "low": 2, "none": 3}
+            text += "\n## Future leads\n\n| Domain | Status | Priority | Re-check | Would qualify with | Watch for |\n|---|---|---|---|---|---|\n"
+            for r, f in sorted(futures, key=lambda x: order.get(x[1].priority, 9)):
+                text += (f"| {r.domain} | {f.label} | {f.priority} | {f.recheck_date or '-'} | "
+                         f"{'; '.join(f.would_qualify_if[:3]) or '-'} | {'; '.join(f.watch_for[:3]) or '-'} |\n")
         path = self.out_dir / "summary.md"
         path.write_text(text)
         return path
