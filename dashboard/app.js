@@ -1,11 +1,11 @@
 // Sprinto outreach dashboard: reads data.json (written by `python -m outreach.export_dashboard`) and draws it.
-// Each fact is shown on exactly one page; pages are switched from the sidebar (#overview, #qualification, ...).
+// Pages are switched from the sidebar (#dashboard, #qualification, #value, #future, #trace).
 (function () {
   const SVG = 'http://www.w3.org/2000/svg';
   const STAGES = ['Scraped', 'Qualified', 'Contact found', 'Emailed'];
   const LABELS = { emailed: 'Emailed', drafted: 'Drafted', disqualified: 'Disqualified', manual_review: 'Manual review', no_poc: 'No contact', failed: 'Failed', awaiting_model: 'Waiting' };
   const C = { green: '#35c46c', greenSoft: '#bfeccf', orange: '#e8572a', orangeSoft: '#f6c3ae', forest: '#0b3a30', forestInk: '#062720', grid: '#edf3ef', track: '#e7efea' };
-  const VIEWS = ['overview', 'dashboard', 'qualification', 'value', 'future', 'trace'];
+  const VIEWS = ['dashboard', 'qualification', 'value', 'future', 'trace'];
 
   let DATA = null;
   let picked = null;
@@ -70,54 +70,9 @@
       drafted: drafted.length,
       firstTry: drafted.filter((c) => +c.draft_attempts === 1).length,
       topDrop: Object.entries(groups).sort((a, b) => b[1] - a[1])[0],
-      recheck: cs.filter((c) => c.future_label === 'Re-check now').length,
     };
   }
   const valued = () => DATA.companies.filter((c) => +c.acv_mid > 0).sort((a, b) => (+b.expected_value) - (+a.expected_value));
-
-  // ---------- Overview ----------
-  function drawOverview() {
-    const t = totals(), rows = valued(), sum = (k) => rows.reduce((s, c) => s + (+c[k] || 0), 0);
-    document.getElementById('o-rate').textContent = `${Math.round((t.qualified / (t.researched || 1)) * 100)}% qualification rate`;
-    document.getElementById('o-reach').textContent = `${t.emailed} of ${t.qualified} qualified reached · ${t.firstTry}/${t.drafted} drafts passed first time`;
-    document.getElementById('o-acv').textContent = rows.length ? money(sum('acv_mid')) : '—';
-    document.getElementById('o-ev').textContent = rows.length ? `${money(sum('acv_low'))}–${money(sum('acv_high'))} range · ${money(sum('expected_value'))} expected` : 'No qualified companies';
-
-    const tb = document.getElementById('lead-rows');
-    if (!rows.length) {
-      const tr = el('tr'); tr.appendChild(el('td', { colspan: 5, class: 'muted' }, 'No qualified companies in this run.')); tb.replaceChildren(tr);
-    } else {
-      tb.replaceChildren(...rows.map((c) => {
-        const tr = el('tr', { tabindex: 0 });
-        const co = el('td'); co.append(el('b', null, c.company), el('span', { class: 'cell-sub' }, c.headcount ? `${c.headcount} employees${c.raised_usd ? ` · ${money(c.raised_usd)} raised` : ''}` : c.domain));
-        const who = el('td'); who.append(document.createTextNode(c.contact_role || '—'), el('span', { class: 'cell-sub' }, c.contact_confidence ? `${c.contact_confidence}% email confidence` : ''));
-        const ev = el('td', { class: 'num' }); ev.append(el('b', null, money(c.expected_value)), el('span', { class: 'cell-sub' }, `${pct(c.win_probability)} win`));
-        tr.append(co, who, el('td', null, (c.frameworks_new || '—').replace(/; /g, ', ')), el('td', { class: 'num' }, `${money(c.acv_low)}–${money(c.acv_high)}`), ev);
-        clickable(tr, c.domain);
-        return tr;
-      }));
-    }
-
-    // Key pointers: each one computed from the data, so they change with every run
-    const P = [];
-    const top = rows[0];
-    if (top) P.push(['Top deal', 'good', [el('b', null, top.company), ` — ${money(top.acv_low)}–${money(top.acv_high)}/yr, ${(top.frameworks_new || '').replace(/; /g, ' + ')}. Contact: ${top.contact_role}.`]]);
-    const soc2 = rows.filter((c) => /SOC 2/.test(c.frameworks_held || ''));
-    if (rows.length && soc2.length === rows.length) P.push(['Pitch', '', [`All ${rows.length} qualified companies already hold SOC 2 — lead with `, el('b', null, 'ISO 27001 expansion'), ', not a first audit.']]);
-    else if (soc2.length) P.push(['Pitch', '', [`${soc2.length} of ${rows.length} qualified companies already hold SOC 2 — lead with ISO 27001 for them.`]]);
-    const now = DATA.companies.filter((c) => c.future_label === 'Re-check now');
-    if (now.length) P.push(['Re-check', 'good', [el('b', null, now.map((c) => c.company).join(', ')), ` fell short only on their own website; company data closes the gap.`]]);
-    const watch = DATA.companies.filter((c) => c.future_category === 'renewal_watch');
-    watch.forEach((c) => P.push(['Watch', 'warn', [el('b', null, c.company), ` already uses a competitor — revisit ${fmtDate(c.recheck_date)}.`]]));
-    if (t.topDrop) P.push(['Dropped', '', [`${t.dropped} of ${t.researched} dropped; most often `, el('b', null, t.topDrop[0].toLowerCase()), ` (${t.topDrop[1]}).`]]);
-    P.push(['Research', '', [`The agent read ${t.pages} extra pages; contact emails average `, el('b', null, `${t.conf ?? '—'}%`), ' confidence.']]);
-    document.getElementById('pointers').replaceChildren(...P.map(([tag, tone, parts]) => {
-      const li = el('li', tone ? { 'data-tone': tone } : null);
-      const body = el('span'); parts.forEach((p) => body.append(typeof p === 'string' ? document.createTextNode(p) : p));
-      li.append(el('span', { class: 'tag' }, tag), body);
-      return li;
-    }));
-  }
 
   // ---------- Dashboard page (restored earlier build) ----------
   function drawDashboard() {
@@ -467,7 +422,6 @@
   // ---------- routing ----------
   function drawView(name) {
     if (!DATA) return;
-    if (name === 'overview') drawOverview();
     if (name === 'dashboard') drawDashboard();
     if (name === 'qualification') drawQualification();
     if (name === 'value') drawValue();
@@ -476,7 +430,7 @@
   }
 
   function route() {
-    const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'overview';
+    const name = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'dashboard';
     VIEWS.forEach((v) => { document.getElementById('view-' + v).hidden = v !== name; });
     document.querySelectorAll('[data-nav]').forEach((a) => {
       const on = a.dataset.nav === name;
@@ -508,5 +462,5 @@
     .catch((e) => { document.getElementById('page-title').textContent = `Couldn't load data.json (${e.message})`; });
 
   let rt;
-  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => drawView(location.hash.slice(1) || 'overview'), 120); });
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => drawView(location.hash.slice(1) || 'dashboard'), 120); });
 })();

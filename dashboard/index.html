@@ -13,13 +13,11 @@
 <body>
   <div class="shell">
     <aside class="side" aria-label="Sidebar">
-      <a class="brand" href="#overview" aria-label="Outreach overview">
+      <a class="brand" href="#dashboard" aria-label="Outreach dashboard">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" fill="#3ecf75"/><path d="m11.3 13.7 3.9-4.4" stroke="#0b3a30" stroke-width="1.8" stroke-linecap="round"/></svg>
         <span>Outreach</span>
       </a>
       <nav class="nav" aria-label="Pages">
-        <a href="#overview" data-nav="overview">
-          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 14h6M9 17h4" stroke="#0b3a30" stroke-width="1.6" stroke-linecap="round"/></svg></span>Overview</a>
         <a href="#dashboard" data-nav="dashboard">
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span>Dashboard</a>
         <a href="#qualification" data-nav="qualification">
@@ -38,35 +36,10 @@
     </aside>
 
     <main class="panel">
-      <h1 id="page-title">Overview</h1>
-
-      <!-- Overview: the executive summary -->
-      <section class="view" id="view-overview" data-title="Overview">
-        <div class="row stats">
-          <article class="card stat"><p class="k-label">Qualified</p><p class="k-value"><span data-k="qualified">—</span><small> of <span data-k="researched">—</span></small></p><p class="k-note" id="o-rate">—</p></article>
-          <article class="card stat"><p class="k-label">Emails ready for review</p><p class="k-value" data-k="emailed">—</p><p class="k-note" id="o-reach">—</p></article>
-          <article class="card stat"><p class="k-label">Annual contract value</p><p class="k-value" id="o-acv">—</p><p class="k-note" id="o-ev">—</p></article>
-          <article class="card stat"><p class="k-label">Re-check now</p><p class="k-value" data-k="recheck">—</p><p class="k-note">Near misses with company data that closes the gap</p></article>
-        </div>
-        <div class="row o-grid">
-          <article class="card">
-            <h2>Follow up first</h2>
-            <div class="tablewrap">
-              <table class="table">
-                <thead><tr><th>Company</th><th>Contact</th><th>New frameworks</th><th class="num">Est. contract / yr</th><th class="num">Expected</th></tr></thead>
-                <tbody id="lead-rows"></tbody>
-              </table>
-            </div>
-          </article>
-          <article class="card pointers">
-            <h2>Key pointers</h2>
-            <ul id="pointers"></ul>
-          </article>
-        </div>
-      </section>
+      <h1 id="page-title">Dashboard</h1>
 
       <!-- Dashboard -->
-      <section class="view legacy" id="view-dashboard" data-title="Dashboard" hidden>
+      <section class="view legacy" id="view-dashboard" data-title="Dashboard">
         <div class="row kpis" aria-label="Run totals">
           <article class="card kpi">
             <div>
