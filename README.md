@@ -87,6 +87,8 @@ Contacts found by hand (in Apollo or on public team pages) can go in `contacts_r
 
 ---
 
+**Component map:** `docs/component-map.html` shows who does what at each stage (Growth Lead, websites, pipeline, Claude, Hunter.io, Gmail, dashboard) as a swimlane diagram.
+
 ## Dashboard
 After a run, export its decision traces for the outreach dashboard:
 ```bash

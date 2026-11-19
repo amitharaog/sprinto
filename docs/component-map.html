@@ -1,0 +1,246 @@
+<title>Outreach Component Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: one wide swimlane figure (rows = components, columns = stages), then a component table. Forest/mint palette shared with the dashboard. */
+:root {
+  --bg: #eef5f1; --panel: #ffffff; --fg: #0f1f1a; --muted: #5f7069; --line: #d3e2da;
+  --lane-a: #f7fbf9; --lane-b: #ffffff; --head: #0b3a30; --head-fg: #ffffff;
+  --main: #0f1f1a; --cond: #d9480f; --human: #7f8f88;
+  --user-f: #e2f6e9; --user-s: #2fa862; --web-f: #eef1f0; --web-s: #8c9c95;
+  --code-f: #ffffff; --code-s: #0b3a30; --ai-f: #ece9fb; --ai-s: #6b5bd6;
+  --hunter-f: #fdf1d6; --hunter-s: #c2830f; --gmail-f: #fbe6dd; --gmail-s: #d9480f;
+  --dash-f: #dff1f3; --dash-s: #2a8c96;
+  --font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0c1714; --panel: #12201c; --fg: #e4efe9; --muted: #93a8a0; --line: #24372f;
+  --lane-a: #12201c; --lane-b: #15251f; --head: #0a2e26; --head-fg: #e4efe9;
+  --main: #e4efe9; --cond: #ff8a5c; --human: #7d928a;
+  --user-f: #173826; --user-s: #45c97d; --web-f: #1d2a26; --web-s: #7f948c;
+  --code-f: #12201c; --code-s: #b9d6c9; --ai-f: #241f45; --ai-s: #9d90f0;
+  --hunter-f: #3a2c0c; --hunter-s: #e0a63a; --gmail-f: #3b1f14; --gmail-s: #ff8a5c;
+  --dash-f: #10333a; --dash-s: #5cc1cc; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0c1714; --panel: #12201c; --fg: #e4efe9; --muted: #93a8a0; --line: #24372f;
+  --lane-a: #12201c; --lane-b: #15251f; --head: #0a2e26; --head-fg: #e4efe9;
+  --main: #e4efe9; --cond: #ff8a5c; --human: #7d928a;
+  --user-f: #173826; --user-s: #45c97d; --web-f: #1d2a26; --web-s: #7f948c;
+  --code-f: #12201c; --code-s: #b9d6c9; --ai-f: #241f45; --ai-s: #9d90f0;
+  --hunter-f: #3a2c0c; --hunter-s: #e0a63a; --gmail-f: #3b1f14; --gmail-s: #ff8a5c;
+  --dash-f: #10333a; --dash-s: #5cc1cc; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 32px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 24px; }
+header { display: flex; flex-direction: column; gap: 6px; max-width: 75ch; }
+.eyebrow { font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { margin: 0; font-size: clamp(1.6rem, 3.2vw, 2.2rem); font-weight: 800; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { margin: 0; font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+figure { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.scroll { overflow-x: auto; }
+figure svg { display: block; width: 100%; min-width: 980px; height: auto; font-family: var(--font); }
+figcaption { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+.key { display: inline-flex; align-items: center; gap: 8px; }
+.key svg { width: 38px; min-width: 0; height: 10px; }
+
+/* SVG parts */
+.lane-a { fill: var(--lane-a); } .lane-b { fill: var(--lane-b); }
+.tag-user { fill: var(--user-s); } .tag-web { fill: var(--web-s); } .tag-code { fill: var(--code-s); }
+.tag-ai { fill: var(--ai-s); } .tag-hunter { fill: var(--hunter-s); } .tag-gmail { fill: var(--gmail-s); } .tag-dash { fill: var(--dash-s); }
+.row-title { fill: var(--fg); font-size: 13px; font-weight: 700; }
+.row-sub { fill: var(--muted); font-size: 11px; }
+.head { fill: var(--head); }
+.head-text { fill: var(--head-fg); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
+.grid { stroke: var(--line); stroke-width: 1; }
+.box { stroke-width: 1.5; }
+.box-user { fill: var(--user-f); stroke: var(--user-s); } .box-web { fill: var(--web-f); stroke: var(--web-s); }
+.box-code { fill: var(--code-f); stroke: var(--code-s); } .box-ai { fill: var(--ai-f); stroke: var(--ai-s); }
+.box-hunter { fill: var(--hunter-f); stroke: var(--hunter-s); } .box-gmail { fill: var(--gmail-f); stroke: var(--gmail-s); }
+.box-dash { fill: var(--dash-f); stroke: var(--dash-s); }
+.box-title { fill: var(--fg); font-size: 12.5px; font-weight: 700; }
+.box-sub { fill: var(--muted); font-size: 11px; }
+.arrow { fill: none; stroke-width: 1.6; }
+.arrow-main { stroke: var(--main); }
+.arrow-cond { stroke: var(--cond); stroke-dasharray: 5 4; }
+.arrow-human { stroke: var(--human); stroke-dasharray: 2 4; stroke-width: 1.8; }
+.ah-main { fill: var(--main); } .ah-cond { fill: var(--cond); } .ah-human { fill: var(--human); }
+.arrow-label { font-size: 11px; font-weight: 600; }
+.label-main { fill: var(--fg); } .label-cond { fill: var(--cond); } .label-human { fill: var(--muted); }
+
+/* Table */
+.tablewrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+thead th { font-size: 0.74rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+tbody th { white-space: nowrap; font-weight: 700; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+td code { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Build 2 · Sprinto cold outreach</p>
+    <h1>Outreach component map</h1>
+    <p class="lede">Who does what, at which stage: from a list of domains to a reviewed email in the Growth Lead's inbox, and every decision on the dashboard. Code decides; Claude reads and writes; nothing reaches a prospect without a human.</p>
+  </header>
+
+  <figure>
+    <div class="scroll">
+<svg viewBox="0 0 1240 752" role="img" aria-label="Component map: the Growth Lead supplies domains; the Python pipeline scrapes each company website, Claude extracts a profile, a code-driven loop fetches extra pages until the ICP questions are answered, Hunter.io supplies the contact and company size, Claude writes pain points and the email, code checks it, Gmail sends it to the Growth Lead's own inbox, and every decision is exported to the Vercel dashboard.">
+<defs><marker id="ah-main" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-main" d="M0,0 L10,5 L0,10 z"/></marker><marker id="ah-cond" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-cond" d="M0,0 L10,5 L0,10 z"/></marker><marker id="ah-human" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-human" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<rect class="lane lane-a" x="0" y="40" width="1240" height="90"/>
+<rect class="lane-tag tag-user" x="0" y="40" width="6" height="90"/>
+<text class="row-title" x="16" y="83.0">Growth Lead</text>
+<text class="row-sub" x="16" y="99.0">the person</text>
+<rect class="lane lane-b" x="0" y="130" width="1240" height="90"/>
+<rect class="lane-tag tag-web" x="0" y="130" width="6" height="90"/>
+<text class="row-title" x="16" y="173.0">Company websites</text>
+<text class="row-sub" x="16" y="189.0">public pages</text>
+<rect class="lane lane-a" x="0" y="220" width="1240" height="160"/>
+<rect class="lane-tag tag-code" x="0" y="220" width="6" height="160"/>
+<text class="row-title" x="16" y="298.0">Pipeline</text>
+<text class="row-sub" x="16" y="314.0">Python · run.py</text>
+<rect class="lane lane-b" x="0" y="380" width="1240" height="90"/>
+<rect class="lane-tag tag-ai" x="0" y="380" width="6" height="90"/>
+<text class="row-title" x="16" y="423.0">Claude</text>
+<text class="row-sub" x="16" y="439.0">API or handoff</text>
+<rect class="lane lane-a" x="0" y="470" width="1240" height="90"/>
+<rect class="lane-tag tag-hunter" x="0" y="470" width="6" height="90"/>
+<text class="row-title" x="16" y="513.0">Hunter.io</text>
+<text class="row-sub" x="16" y="529.0">contacts + size</text>
+<rect class="lane lane-b" x="0" y="560" width="1240" height="90"/>
+<rect class="lane-tag tag-gmail" x="0" y="560" width="6" height="90"/>
+<text class="row-title" x="16" y="603.0">Gmail</text>
+<text class="row-sub" x="16" y="619.0">own inbox only</text>
+<rect class="lane lane-a" x="0" y="650" width="1240" height="92"/>
+<rect class="lane-tag tag-dash" x="0" y="650" width="6" height="92"/>
+<text class="row-title" x="16" y="694.0">Dashboard</text>
+<text class="row-sub" x="16" y="710.0">Vercel</text>
+<rect class="head" x="0" y="0" width="1240" height="40"/>
+<text class="head-text" x="16" y="25">Component</text>
+<line class="grid" x1="140" y1="0" x2="140" y2="742"/>
+<text class="head-text" x="215.0" y="25" text-anchor="middle">Trigger</text>
+<line class="grid" x1="290" y1="0" x2="290" y2="742"/>
+<text class="head-text" x="375.0" y="25" text-anchor="middle">Input</text>
+<line class="grid" x1="460" y1="0" x2="460" y2="742"/>
+<text class="head-text" x="545.0" y="25" text-anchor="middle">Context</text>
+<line class="grid" x1="630" y1="0" x2="630" y2="742"/>
+<text class="head-text" x="745.0" y="25" text-anchor="middle">Processing</text>
+<line class="grid" x1="860" y1="0" x2="860" y2="742"/>
+<text class="head-text" x="950.0" y="25" text-anchor="middle">AI</text>
+<line class="grid" x1="1040" y1="0" x2="1040" y2="742"/>
+<text class="head-text" x="1140.0" y="25" text-anchor="middle">Output</text>
+<path class="arrow arrow-main" d="M215,110 V272 H300" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="207" y="192" text-anchor="middle" transform="rotate(-90 207 192)">domains</text>
+<path class="arrow arrow-main" d="M375,200 V238" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="381" y="224" text-anchor="start">HTML</text>
+<path class="arrow arrow-main" d="M448,272 H545 V394" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="497" y="266" text-anchor="middle">clean text</text>
+<path class="arrow arrow-main" d="M618,425 H636 V269 H648" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="628" y="350" text-anchor="middle" transform="rotate(-90 628 350)">profile</text>
+<path class="arrow arrow-cond" d="M760,236 V202" marker-end="url(#ah-cond)"/>
+<text class="arrow-label label-cond" x="767" y="231" text-anchor="start">field empty → fetch (≤ 4 pages)</text>
+<path class="arrow arrow-cond" d="M650,175 H590 V394" marker-end="url(#ah-cond)"/>
+<text class="arrow-label label-cond" x="620" y="169" text-anchor="middle">re-extract</text>
+<path class="arrow arrow-main" d="M830,269 H856 V425 H870" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="849" y="350" text-anchor="middle" transform="rotate(-90 849 350)">qualified</text>
+<path class="arrow arrow-main" d="M950,392 V304" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="943" y="348" text-anchor="middle" transform="rotate(-90 943 348)">draft</text>
+<path class="arrow arrow-cond" d="M1010,302 V390" marker-end="url(#ah-cond)"/>
+<text class="arrow-label label-cond" x="1023" y="346" text-anchor="middle" transform="rotate(-90 1023 346)">rewrite ≤ 3</text>
+<path class="arrow arrow-main" d="M769,486 V368" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="762" y="427" text-anchor="middle" transform="rotate(-90 762 427)">contact · size</text>
+<path class="arrow arrow-main" d="M1028,271 H1040 V605 H1050" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="1053" y="440" text-anchor="middle" transform="rotate(-90 1053 440)">passes checks</text>
+<path class="arrow arrow-main" d="M672,366 V664" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="665" y="520" text-anchor="middle" transform="rotate(-90 665 520)">decision traces</text>
+<path class="arrow arrow-main" d="M830,695 H1050" marker-end="url(#ah-main)"/>
+<text class="arrow-label label-main" x="941" y="689" text-anchor="middle">data.json → Vercel</text>
+<path class="arrow arrow-human" d="M1140,576 V112" marker-end="url(#ah-human)"/>
+<text class="arrow-label label-human" x="1133" y="345" text-anchor="middle" transform="rotate(-90 1133 345)">3 emails + review notes</text>
+<path class="arrow arrow-human" d="M1228,695 H1234 V85 H1230" marker-end="url(#ah-human)"/>
+<text class="arrow-label label-human" x="1227" y="420" text-anchor="middle" transform="rotate(-90 1227 420)">reads</text>
+<rect class="box box-user" x="152" y="60" width="126" height="50" rx="9"/>
+<text class="box-title" x="215.0" y="81.5" text-anchor="middle">prospects.txt</text>
+<text class="box-sub" x="215.0" y="96.5" text-anchor="middle">list of domains</text>
+<rect class="box box-user" x="1052" y="60" width="176" height="50" rx="9"/>
+<text class="box-title" x="1140.0" y="81.5" text-anchor="middle">Review &amp; decide</text>
+<text class="box-sub" x="1140.0" y="96.5" text-anchor="middle">real sends stay human</text>
+<rect class="box box-web" x="302" y="150" width="146" height="50" rx="9"/>
+<text class="box-title" x="375.0" y="171.5" text-anchor="middle">Homepage</text>
+<text class="box-sub" x="375.0" y="186.5" text-anchor="middle">robots.txt · 7-day cache</text>
+<rect class="box box-web" x="650" y="150" width="180" height="50" rx="9"/>
+<text class="box-title" x="740.0" y="171.5" text-anchor="middle">Extra pages</text>
+<text class="box-sub" x="740.0" y="186.5" text-anchor="middle">/security → /careers → /pricing</text>
+<rect class="box box-code" x="302" y="240" width="146" height="62" rx="9"/>
+<text class="box-title" x="375.0" y="260.0" text-anchor="middle">1 · Scrape &amp; clean</text>
+<text class="box-sub" x="375.0" y="275.0" text-anchor="middle">nav, footer, cookies out</text>
+<text class="box-sub" x="375.0" y="290.0" text-anchor="middle">cert badges scanned</text>
+<rect class="box box-code" x="650" y="236" width="180" height="66" rx="9"/>
+<text class="box-title" x="740.0" y="258.0" text-anchor="middle">3 · Qualify loop</text>
+<text class="box-sub" x="740.0" y="273.0" text-anchor="middle">field empty? fetch next page</text>
+<text class="box-sub" x="740.0" y="288.0" text-anchor="middle">hard gates · ICP score ≥ 5</text>
+<rect class="box box-code" x="650" y="312" width="180" height="54" rx="9"/>
+<text class="box-title" x="740.0" y="335.5" text-anchor="middle">3b Value · 3c Future lead</text>
+<text class="box-sub" x="740.0" y="350.5" text-anchor="middle">contract range · re-check date</text>
+<rect class="box box-code" x="872" y="240" width="156" height="62" rx="9"/>
+<text class="box-title" x="950.0" y="260.0" text-anchor="middle">6 · Email checks</text>
+<text class="box-sub" x="950.0" y="275.0" text-anchor="middle">first name · 60–140 words</text>
+<text class="box-sub" x="950.0" y="290.0" text-anchor="middle">one ask · real hook</text>
+<rect class="box box-ai" x="472" y="396" width="146" height="58" rx="9"/>
+<text class="box-title" x="545.0" y="421.5" text-anchor="middle">2 · Extract profile</text>
+<text class="box-sub" x="545.0" y="436.5" text-anchor="middle">named fields + quotes</text>
+<rect class="box box-ai" x="872" y="392" width="156" height="66" rx="9"/>
+<text class="box-title" x="950.0" y="414.0" text-anchor="middle">Judge + why-now</text>
+<text class="box-sub" x="950.0" y="429.0" text-anchor="middle">5 · Two pain points</text>
+<text class="box-sub" x="950.0" y="444.0" text-anchor="middle">6 · Draft email</text>
+<rect class="box box-hunter" x="704" y="486" width="130" height="58" rx="9"/>
+<text class="box-title" x="769.0" y="504.0" text-anchor="middle">4 · Find contact</text>
+<text class="box-sub" x="769.0" y="519.0" text-anchor="middle">domain + email finder</text>
+<text class="box-sub" x="769.0" y="534.0" text-anchor="middle">company size</text>
+<rect class="box box-gmail" x="1052" y="576" width="176" height="58" rx="9"/>
+<text class="box-title" x="1140.0" y="601.5" text-anchor="middle">7 · Send</text>
+<text class="box-sub" x="1140.0" y="616.5" text-anchor="middle">to own inbox + review notes</text>
+<rect class="box box-code" x="650" y="666" width="180" height="58" rx="9"/>
+<text class="box-title" x="740.0" y="691.5" text-anchor="middle">Export</text>
+<text class="box-sub" x="740.0" y="706.5" text-anchor="middle">decision traces → data.json</text>
+<rect class="box box-dash" x="1052" y="666" width="176" height="58" rx="9"/>
+<text class="box-title" x="1140.0" y="691.5" text-anchor="middle">Dashboard · 5 pages</text>
+<text class="box-sub" x="1140.0" y="706.5" text-anchor="middle">value · future leads · trace</text>
+</svg>
+    </div>
+    <figcaption>
+      <span class="key"><svg viewBox="0 0 38 10" aria-hidden="true"><line x1="0" y1="5" x2="38" y2="5" style="stroke: var(--main); stroke-width: 2"/></svg>Main flow, every company</span>
+      <span class="key"><svg viewBox="0 0 38 10" aria-hidden="true"><line x1="0" y1="5" x2="38" y2="5" style="stroke: var(--cond); stroke-width: 2; stroke-dasharray: 5 4"/></svg>Only when needed: a field is missing, or a draft fails a check</span>
+      <span class="key"><svg viewBox="0 0 38 10" aria-hidden="true"><line x1="0" y1="5" x2="38" y2="5" style="stroke: var(--human); stroke-width: 2; stroke-dasharray: 2 4"/></svg>Handoff to the person</span>
+    </figcaption>
+  </figure>
+
+  <section aria-labelledby="components">
+    <h2 id="components" style="margin-bottom:12px">Components</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th scope="col">Step</th><th scope="col">Code</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+<tr><th scope="row">1 · Scrape &amp; clean</th><td><code>outreach/step1_scrape.py</code></td><td>Reads one page at a time. Checks robots.txt, records bot blocks instead of evading them, strips nav, footer and cookie banners, caps text at ~2k tokens, scans raw HTML for certification badges, caches pages for 7 days.</td></tr>
+<tr><th scope="row">2 · Extract profile</th><td><code>outreach/step2_extract.py</code></td><td>Claude fills named fields (is it B2B SaaS, certifications held, stage, enterprise signals…) and quotes the page for each. Unknown stays empty.</td></tr>
+<tr><th scope="row">3 · Qualify loop</th><td><code>outreach/step3_qualify.py</code></td><td>Code checks which ICP questions are still unanswered and fetches the next page that answers them (security, then careers, then pricing; at most 4). Hard gates end it early; a points table decides; Claude writes the why-now.</td></tr>
+<tr><th scope="row">3b · Deal value</th><td><code>outreach/step3b_value.py</code></td><td>Estimated contract range, win chance and expected value from company size (Hunter.io) and an editable price table.</td></tr>
+<tr><th scope="row">3c · Future lead</th><td><code>outreach/step3c_future.py</code></td><td>For every company that didn&#x27;t qualify: near miss, watch for renewal, re-check now or not a fit, with a re-check date.</td></tr>
+<tr><th scope="row">4 · Find contact</th><td><code>outreach/step4_poc.py</code></td><td>Hunter.io domain search and email finder (cached). Roles ranked by company size; sales, HR and marketing never picked; must have a deliverable address.</td></tr>
+<tr><th scope="row">5 · Pain points</th><td><code>outreach/step5_pain.py</code></td><td>Claude names two pains for that person&#x27;s role, each tied to a scraped fact.</td></tr>
+<tr><th scope="row">6 · Draft + checks</th><td><code>outreach/step6_email.py</code></td><td>Claude drafts; code checks first name, 60–140 words, one question, no placeholders or clichés, and that the hook is a real scraped fact. Up to 3 rewrites.</td></tr>
+<tr><th scope="row">7 · Send</th><td><code>outreach/step7_send.py</code></td><td>Gmail to the Growth Lead&#x27;s own inbox only, with review notes under the email. A .eml copy is always saved.</td></tr>
+<tr><th scope="row">Dashboard</th><td><code>outreach/export_dashboard.py · dashboard/</code></td><td>Decision traces exported to data.json and deployed on Vercel: Dashboard, Qualification, Pipeline value, Future leads, Decision trace.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
