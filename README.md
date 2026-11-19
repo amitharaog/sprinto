@@ -92,7 +92,9 @@ After a run, export its decision traces for the outreach dashboard:
 ```bash
 python -m outreach.export_dashboard outputs/<run> --sent uptiq.ai,zocks.io
 ```
-This writes `companies.csv`, `scores.csv` and `loop.csv` to `outputs/<run>/dashboard/`. Contacts appear by role only. Upload the three files to the dashboard to refresh it.
+This writes `companies.csv`, `scores.csv` and `loop.csv` to `outputs/<run>/dashboard/`, and `dashboard/data.json` for the web dashboard. Contacts appear by role only.
+
+**Web dashboard (Vercel):** `dashboard/` is a static site (HTML, CSS, JS, no build step) that draws `data.json`. Its live address is https://sprinto-outreach-dashboard-nine.vercel.app, deployed from this repo with root directory `dashboard`. To update it after a run, re-export, commit `dashboard/data.json` and redeploy (Vercel dashboard → Redeploy, or `vercel --prod` from `dashboard/`). Preview it locally with `python -m http.server -d dashboard`.
 
 ---
 
