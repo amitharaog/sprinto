@@ -92,8 +92,7 @@ def assess_future(p: CompanyProfile, status: str, reason: str, score: int,
                           note="Core certifications done; a lead only if a new framework appears.")
 
     if any(w in reason for w in NEVER):
-        return FutureLead("not_a_fit", "Not a fit", "none", None, None, None,
-                          note="Ruled out by a hard gate that's unlikely to change.")
+        return FutureLead("not_a_fit", "Not a fit", "none", None, None, None, note=reason)
 
     # Score below threshold: how far short, and what would close the gap?
     gap = max(1, t - score)
@@ -116,7 +115,7 @@ def assess_future(p: CompanyProfile, status: str, reason: str, score: int,
 
     if extra >= gap:
         return FutureLead("near_miss", "Re-check now", "high", 0, run_date.isoformat(), gap, closes, watch, evidence,
-                          note=f"Company data closes the {gap}-point gap. Re-score with it before the next run.")
+                          note="Company data closes the gap. Re-score with it before the next run.")
     months, prio = (3, "high") if gap == 1 else (6, "medium") if gap == 2 else (9, "low")
     return FutureLead("near_miss", "Near miss", prio, months, _add_months(run_date, months), gap, closes, watch, evidence,
                       note=f"{gap} point{'s' if gap > 1 else ''} short of the threshold of {t}.")
