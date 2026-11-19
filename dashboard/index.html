@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Sprinto Outreach Pipeline</title>
-  <meta name="description" content="Which prospects qualified for Sprinto, why, who was contacted, and every step the research agent took.">
+  <meta name="description" content="Which prospects qualified for Sprinto, what they're worth, who to contact, and which to re-check later.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
@@ -13,14 +13,13 @@
 <body>
   <div class="shell">
     <aside class="side" aria-label="Sidebar">
-      <a class="brand" href="#dashboard" aria-label="Outreach dashboard">
+      <a class="brand" href="#overview" aria-label="Outreach overview">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" fill="#3ecf75"/><path d="m11.3 13.7 3.9-4.4" stroke="#0b3a30" stroke-width="1.8" stroke-linecap="round"/></svg>
         <span>Outreach</span>
       </a>
       <nav class="nav" aria-label="Pages">
-        <p class="nav-label">Navigation</p>
-        <a href="#dashboard" data-nav="dashboard">
-          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg></span>Dashboard</a>
+        <a href="#overview" data-nav="overview">
+          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg></span>Overview</a>
         <a href="#qualification" data-nav="qualification">
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9m7 10V5m7 14v-7" stroke-width="2.4" stroke-linecap="round"/></svg></span>Qualification</a>
         <a href="#value" data-nav="value">
@@ -29,160 +28,59 @@
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke-width="2"/><path d="M12 7.5V12l3 2" stroke-width="2" stroke-linecap="round" fill="none"/></svg></span>Future leads</a>
         <a href="#trace" data-nav="trace">
           <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5z"/></svg></span>Decision trace</a>
-        <a href="#companies" data-nav="companies">
-          <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v4H5zm0 6h14v4H5zm0 6h14v2H5z"/></svg></span>Companies</a>
       </nav>
       <div class="side-foot">
-        <p class="nav-label">Run</p>
-        <div class="run">
-          <span class="run-dot" aria-hidden="true"></span>
-          <div><b id="run-name">—</b><span id="run-date">—</span></div>
-        </div>
+        <p class="run"><b id="run-name">—</b><span id="run-date">—</span></p>
+        <a class="raw" href="data.json" target="_blank" rel="noopener">Raw data</a>
       </div>
     </aside>
 
     <main class="panel">
-      <header class="top">
-        <div>
-          <h1 id="page-title">Dashboard</h1>
-          <p class="lede" id="page-lede">Loading the latest run…</p>
-        </div>
-        <a class="btn-dark" href="data.json" target="_blank" rel="noopener">Raw data</a>
-      </header>
+      <h1 id="page-title">Overview</h1>
 
-      <!-- Dashboard -->
-      <section class="view" id="view-dashboard" data-title="Dashboard">
-        <div class="row kpis" aria-label="Run totals">
-          <article class="card kpi">
-            <div>
-              <p class="k-label">Companies researched</p>
-              <p class="k-value"><span data-k="researched">—</span></p>
-              <p class="k-delta up" id="d-researched">—</p>
-            </div>
-            <div class="mini" id="mini-researched" aria-hidden="true"></div>
-          </article>
-          <article class="card kpi">
-            <div>
-              <p class="k-label">Disqualified</p>
-              <p class="k-value"><span data-k="dropped">—</span><small>/<span data-k="researched">—</span></small></p>
-              <p class="k-delta down" id="d-dropped">—</p>
-            </div>
-            <div class="mini" id="mini-dropped" aria-hidden="true"></div>
-          </article>
-          <article class="card kpi">
-            <div>
-              <p class="k-label">Emails sent for review</p>
-              <p class="k-value"><span data-k="emailed">—</span></p>
-              <p class="k-delta up" id="d-emailed">—</p>
-            </div>
-            <div class="mini" id="mini-emailed" aria-hidden="true"></div>
-          </article>
+      <!-- Overview: where the run stands, and who to follow up first -->
+      <section class="view" id="view-overview" data-title="Overview">
+        <div class="row stats">
+          <article class="card stat"><p class="k-label">Researched</p><p class="k-value" data-k="researched">—</p></article>
+          <article class="card stat"><p class="k-label">Qualified</p><p class="k-value" data-k="qualified">—</p><p class="k-note">Score <span class="thr">—</span>+ and no hard gate</p></article>
+          <article class="card stat"><p class="k-label">Emails sent for review</p><p class="k-value" data-k="emailed">—</p><p class="k-note">To the Growth Lead's inbox</p></article>
+          <article class="card stat"><p class="k-label">Re-check now</p><p class="k-value" data-k="recheck">—</p><p class="k-note">Dropped, but company data closes the gap</p></article>
         </div>
-
-        <div class="row mid">
-          <article class="card center">
-            <h2>Qualification rate</h2>
-            <p class="big"><span id="rate">—</span><small>%</small></p>
-            <div class="gauge" id="gauge" role="img" aria-label="Qualification rate"></div>
-            <p class="fine">Qualify threshold <b class="thr">—</b> points</p>
-          </article>
-          <article class="card center">
-            <h2>Contact confidence</h2>
-            <p class="big"><span id="conf">—</span><small>%</small></p>
-            <ul class="legend" id="conf-legend"></ul>
-            <a class="btn-line" href="#trace">View contacts</a>
-          </article>
-          <article class="card wide">
-            <div class="card-head">
-              <h2>ICP score by company</h2>
-              <a class="link" href="#qualification">Details</a>
-            </div>
-            <p class="sub">Green qualified; orange was dropped, darker for higher scores. Click a company for its decision.</p>
-            <div class="wide-body">
-              <ul class="score-list" id="score-list"></ul>
-              <div class="chart" id="score-chart"></div>
-            </div>
-          </article>
-        </div>
-
-        <div class="row bottom">
-          <div class="pills">
-            <article class="pill dark">
-              <div class="ring" id="ring-pages" aria-hidden="true"></div>
-              <div><h3>Agent loop</h3><p><span data-k="pages">—</span> extra pages read beyond homepages, capped at 4 per company</p></div>
-            </article>
-            <article class="pill light">
-              <div class="ring" id="ring-drafts" aria-hidden="true"></div>
-              <div><h3>Draft quality checks</h3><p id="draft-note">—</p></div>
-            </article>
+        <article class="card">
+          <h2>Follow up first</h2>
+          <div class="tablewrap">
+            <table class="table">
+              <thead><tr><th>Company</th><th>Contact</th><th>Why now</th><th class="num">Est. contract / yr</th><th class="num">Expected</th></tr></thead>
+              <tbody id="lead-rows"></tbody>
+            </table>
           </div>
-          <article class="promo">
-            <div class="promo-top">
-              <span class="promo-brand"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 11.5 21 3l-6.5 18-3.2-7.3L3 11.5Z" fill="#c7f5d6"/></svg>In your inbox</span>
-              <a class="promo-arrow" href="#trace" aria-label="Open the decision trace"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg></a>
-            </div>
-            <p class="promo-title"><span data-k="emailed">—</span> emails ready for the Growth Lead to review</p>
-            <div class="chips" id="chips"></div>
-          </article>
-        </div>
+        </article>
       </section>
 
-      <!-- Qualification -->
+      <!-- Qualification: why companies passed or failed -->
       <section class="view" id="view-qualification" data-title="Qualification" hidden>
         <div class="row q-grid">
-          <article class="card q-scores">
-            <div class="card-head">
-              <h2>ICP score by company</h2>
-              <span class="fine">Qualify threshold <b class="thr">—</b> points</span>
-            </div>
-            <p class="sub">Points from the scoring table. Hard gates (already on a compliance platform, not SaaS) drop a company whatever its score. Hover or tap a bar for the reasons, click to open its decision.</p>
-            <div class="chart tall" id="q-score-chart"></div>
-          </article>
           <article class="card">
-            <h2>Where each company stopped</h2>
-            <p class="sub">Companies that reached each step</p>
-            <div class="chart" id="funnel-chart"></div>
+            <div class="card-head"><h2>ICP score</h2><span class="fine">Qualify at <b class="thr">—</b></span></div>
+            <div class="chart" id="score-chart"></div>
           </article>
           <article class="card">
             <h2>Why companies were dropped</h2>
-            <p class="sub">Disqualified companies by the rule that stopped them</p>
             <div class="chart" id="drop-chart"></div>
           </article>
         </div>
       </section>
 
-      <!-- Pipeline value -->
+      <!-- Pipeline value: what the qualified companies are worth -->
       <section class="view" id="view-value" data-title="Pipeline value" hidden>
-        <div class="row kpis">
-          <article class="card kpi">
-            <div>
-              <p class="k-label">Potential annual contract value</p>
-              <p class="k-value" id="v-acv">—</p>
-              <p class="k-delta" id="v-acv-range">—</p>
-            </div>
-          </article>
-          <article class="card kpi">
-            <div>
-              <p class="k-label">Expected pipeline value</p>
-              <p class="k-value" id="v-ev">—</p>
-              <p class="k-delta" id="v-ev-note">—</p>
-            </div>
-          </article>
-          <article class="card kpi">
-            <div>
-              <p class="k-label">3-year value if all close</p>
-              <p class="k-value" id="v-3y">—</p>
-              <p class="k-delta" id="v-3y-note">—</p>
-            </div>
-          </article>
+        <div class="row stats three">
+          <article class="card stat"><p class="k-label">Annual contract value</p><p class="k-value" id="v-acv">—</p><p class="k-note" id="v-acv-range">—</p></article>
+          <article class="card stat"><p class="k-label">Expected value</p><p class="k-value" id="v-ev">—</p><p class="k-note">Midpoint × chance of winning</p></article>
+          <article class="card stat"><p class="k-label">3-year value</p><p class="k-value" id="v-3y">—</p><p class="k-note" id="v-3y-note">—</p></article>
         </div>
         <div class="row v-grid">
           <article class="card">
-            <div class="card-head">
-              <h2>Contract value range by company</h2>
-              <span class="fine">Ranked by expected value</span>
-            </div>
-            <p class="sub">Bar = estimated annual contract range; dot = midpoint. Expected value = midpoint × chance of winning. Click a company for its decision.</p>
+            <h2>Contract value by company</h2>
             <div class="chart" id="value-chart"></div>
             <div class="tablewrap">
               <table class="table compact">
@@ -193,51 +91,37 @@
           </article>
           <article class="card assumptions">
             <h2>Assumptions</h2>
-            <p class="sub">Estimates from public benchmarks, editable in <code>config.py</code>. Replace with Sprinto's price book.</p>
-            <h3>First framework, per year</h3>
+            <p class="fine">Public benchmarks; edit in <code>config.py</code>.</p>
+            <h3>First framework / yr</h3>
             <ul class="kv" id="a-price"></ul>
             <h3>Each extra framework</h3>
             <p id="a-uplift">—</p>
-            <h3>Chance of winning (first cold email)</h3>
+            <h3>Chance of winning</h3>
             <ul class="kv" id="a-win"></ul>
             <p class="fine src" id="a-ret">—</p>
           </article>
         </div>
       </section>
 
-      <!-- Future leads -->
+      <!-- Future leads: what to re-check later -->
       <section class="view" id="view-future" data-title="Future leads" hidden>
-        <div class="row kpis">
-          <article class="card kpi"><div><p class="k-label">Re-check now</p><p class="k-value" id="f-now">—</p><p class="k-delta up" id="f-now-note">—</p></div></article>
-          <article class="card kpi"><div><p class="k-label">On the watch list</p><p class="k-value" id="f-watch">—</p><p class="k-delta" id="f-watch-note">—</p></div></article>
-          <article class="card kpi"><div><p class="k-label">Not a fit</p><p class="k-value" id="f-no">—</p><p class="k-delta down" id="f-no-note">—</p></div></article>
+        <div class="row f-grid">
+          <div class="future-grid" id="future-cards"></div>
+          <article class="card signals">
+            <h2>Signals that qualify a near miss</h2>
+            <p class="fine">Any one of these closes a 1–2 point gap.</p>
+            <ul class="kv" id="signals"></ul>
+          </article>
         </div>
-        <div class="future-grid" id="future-cards"></div>
       </section>
 
-      <!-- Decision trace -->
+      <!-- Decision trace: everything about one company -->
       <section class="view" id="view-trace" data-title="Decision trace" hidden>
         <div class="row trace-grid">
-          <nav class="card co-list" aria-label="Companies">
-            <h2>Companies</h2>
-            <ul id="co-list"></ul>
-          </nav>
+          <nav class="card co-list" aria-label="Companies"><ul id="co-list"></ul></nav>
           <article class="card trace" id="detail"></article>
         </div>
       </section>
-
-      <!-- Companies -->
-      <section class="view" id="view-companies" data-title="Companies" hidden>
-        <article class="card fill">
-          <div class="tablewrap">
-            <table class="table">
-              <thead><tr><th>Company</th><th>Outcome</th><th class="num">Score</th><th>Decision</th><th>Contact</th><th>Email subject</th></tr></thead>
-              <tbody id="rows"></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
     </main>
   </div>
   <script src="app.js"></script>
