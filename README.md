@@ -77,6 +77,16 @@ python -m pytest -q
 
 ---
 
+## No Anthropic API key? Use handoff mode
+```bash
+python run.py domains.txt --llm handoff --dry-run --out outputs/my-run
+```
+Each model request (extract, judge, pain points, draft) is written to `handoff/pending/<key>.json` with its system prompt, input and JSON schema. An agent such as Claude Code answers it in `handoff/answers/<key>.json`, and you re-run the same command. Pages and contacts are cached, so each re-run picks up where the last one stopped. Answers are validated against the same schemas, and **every decision (what to fetch, scores, who to contact, the email checks) is still made by the code.** Each finished email is also written to `outputs/<run>/outbox/<domain>.json`, so it can be sent through a Gmail connector instead of SMTP. Mode is chosen automatically: `api` if `ANTHROPIC_API_KEY` is set, otherwise `handoff`.
+
+Contacts found by hand (in Apollo or on public team pages) can go in `contacts_research.json`, which uses the same format as `contacts_manual.json` but is git-ignored, so real people's details stay off GitHub.
+
+---
+
 ## What each step does
 
 | # | Step | File | Model or code? | Key choices |

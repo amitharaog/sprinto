@@ -136,9 +136,14 @@ def hunter_domain_search(domain: str, api_key: str, session: requests.Session | 
 
 
 def manual_contacts(domain: str) -> list[Contact]:
-    if not config.MANUAL_CONTACTS_FILE.exists():
-        return []
-    data = json.loads(config.MANUAL_CONTACTS_FILE.read_text())
+    """contacts_manual.json (committed example) + contacts_research.json (git-ignored: real people's
+    details from Apollo or public team pages stay off GitHub)."""
+    data: dict = {}
+    for f in (config.MANUAL_CONTACTS_FILE, config.MANUAL_CONTACTS_FILE.with_name("contacts_research.json")):
+        if f.exists():
+            for d, people in json.loads(f.read_text()).items():
+                if not d.startswith("_"):
+                    data.setdefault(d, []).extend(people)
     return [Contact(first_name=c["first_name"], last_name=c.get("last_name", ""), email=c.get("email", ""),
                     position=c.get("position", ""), source=c.get("source", "apollo_manual"),
                     linkedin=c.get("linkedin"))

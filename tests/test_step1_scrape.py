@@ -81,3 +81,10 @@ def test_link_matching_uses_url_structure_not_substrings():
     assert not m("/case-studies/dk-security", "acme.com", "DK Security case study", pats)
     assert not m("/resources/blog", "acme.com", "Read our blog about security and AI", pats)
     assert m("/resources/blog", "acme.com", "Security", pats)            # short nav label still counts
+
+
+def test_soft_404_is_a_failure(monkeypatch):
+    monkeypatch.setattr(s1, "_fetch_with_browser", lambda url: None)
+    html = "<html><head><title>Page not found | Acme</title></head><body><p>" + "word " * 30 + "</p></body></html>"
+    page = s1.fetch_page("https://acme.com/security", "security", "acme.com", FakeFetcher(FakeResp(200, html)), use_cache=False)
+    assert not page.ok and page.failure.startswith("soft_404")

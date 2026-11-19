@@ -266,7 +266,10 @@ def qualify(domain: str, homepage: Page, llm: StructuredLLM, fetcher: Fetcher | 
         extra += 1
         tried.add(url.rstrip("/"))
         page = fetch_page(url, kind, domain, fetcher, use_cache)
-        if page.ok:
+        if page.ok and detect_compliance_platform([page]):
+            pages.append(page)                       # decided in code - no model call needed
+            res = f"ok; trust centre hosted by {detect_compliance_platform([page])}"
+        elif page.ok:
             pages.append(page)
             profile = extract_profile(domain, pages, llm)
             res = f"ok ({page.word_count} words); re-extracted profile"

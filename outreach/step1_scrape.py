@@ -308,7 +308,9 @@ def fetch_page(url: str, kind: str, domain: str, fetcher: Fetcher, use_cache: bo
         word_count=len(text.split()), cert_mentions=find_cert_mentions(html),
         links=discover_links(html, r.url, domain), fetched_with=fetched_with,
     )
-    if page.word_count == 0:
+    if re.search(r"\b(page not found|404|not found)\b", title, re.I):
+        page.ok, page.failure = False, f"soft_404: page says '{title[:60]}'"
+    elif page.word_count == 0:
         page.ok, page.failure = False, "empty_after_cleaning: likely JavaScript-rendered (install playwright to handle)"
     if page.ok:
         _save_cache(page)

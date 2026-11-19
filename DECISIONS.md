@@ -43,6 +43,7 @@ Sprinto's brief says: *B2B SaaS, usually Series A–C, either preparing for an a
 | Sells to consumers only | Without enterprise buyers, nobody is asking them for SOC 2 |
 | Already holds **both** SOC 2 and ISO 27001 | The core problem is already solved. *Holding just one does **not** disqualify:* adding the second framework is a real expansion pitch, because Sprinto reuses the shared controls |
 | Public or acquired | Outside the Series A–C ICP. Compliance is handled by an established team and bought through procurement |
+| Trust centre hosted by Vanta, Drata, Secureframe, etc. | They already pay for a compliance platform, so this is a displacement deal, not a cold first touch. Detected in code from the security page's title or host. Added after the first live run, where trust.ampersand.ai turned out to be a Vanta trust centre |
 
 ### 3b. Points table (`score_profile()`): qualify at **5 or more**
 
@@ -112,6 +113,8 @@ Who owns the SOC 2 problem changes as a company grows:
 - **Cleaning:** removes nav, header, footer, scripts and cookie banners. Drops blocks under 8 words and duplicates. Caps each page at about 2,000 tokens. At $2 per million tokens, 15,000 raw tokens for 200 companies costs $6.00, while 500 cleaned tokens costs $0.20.
 - **Certification badges sit in the footer or in image alt text, which cleaning removes.** So before cleaning, a regex scans the raw HTML for them and the model gets the results labelled as "could be marketing copy, not proof".
 - **Headless browser only as a fallback.** If a homepage has under 200 words after cleaning and Playwright is installed, the page is rendered in a browser, which costs 10–50× more.
+- **Soft 404s count as failures.** Some sites answer a missing `/security` with HTTP 200 and a "Page not found" title. That page must not count as "security page checked, no certification found".
+- **Links are classified by URL structure**, not by any substring. `/case-studies/dk-security` is a customer story, not a security page.
 - **Pages are cached for 7 days.** Re-running a company researched this week costs nothing.
 
 ## 7. What happens when a step fails (decided per tool before the build)
