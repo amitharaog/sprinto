@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -39,6 +40,9 @@ def main() -> int:
     domains = read_domains(args.inputs)
     if not domains:
         print("No domains given.")
+        return 1
+    if not (os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN")):
+        print("ANTHROPIC_API_KEY is not set. Add it to .env (see README, Step 2).")
         return 1
     if not args.dry_run and not config.MY_EMAIL:
         print("MY_EMAIL is not set in .env - running as --dry-run (drafts only).")

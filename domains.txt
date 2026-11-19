@@ -1,5 +1,6 @@
 # One domain per line. Lines starting with # are ignored.
-# Replace these with the prospects you want to run.
+# Replace these with your own researched prospects (B2B SaaS, Series A-C).
+# Note: already-certified companies (SOC 2 + ISO 27001) are dropped on purpose.
 posthog.com
 linear.app
 chargebee.com
