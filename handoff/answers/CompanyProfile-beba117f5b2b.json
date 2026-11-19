@@ -1,0 +1,22 @@
+{
+ "company_name": "Procuros",
+ "one_line_description": "AI-native B2B trade connectivity that replaces EDI, OCR and manual integrations between trade partners and ERPs.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Suppliers, retailers and brands trading via EDI/ERP",
+ "is_compliance_automation_vendor": false,
+ "sells_in_eu_or_uk": true,
+ "handles_sensitive_data": null,
+ "evidence": [
+  {
+   "field": "is_software_product",
+   "quote": "Replace legacy EDI, OCR and manual integrations with AI-native connectivity.",
+   "url": "https://procuros.io/"
+  },
+  {
+   "field": "sells_in_eu_or_uk",
+   "quote": "Their flexible platform and collaborative team make the difference as we scale across Europe.",
+   "url": "https://procuros.io/"
+  }
+ ]
+}

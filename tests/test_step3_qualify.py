@@ -87,3 +87,17 @@ def test_low_score_is_disqualified(monkeypatch, fake_llm_cls):
                                                 headcount_estimate=3000))
     q = s3.qualify("acme.com", home(), llm, fetcher=object())
     assert q.status == "disqualified" and "below the threshold" in q.reason
+
+
+def test_iso_iec_label_is_recognised():
+    assert s3._has(["ISO/IEC 27001:2022"], "ISO 27001") and s3._has(["SOC 2 Type II"], "SOC 2")
+
+
+def test_vanta_hosted_trust_centre_short_circuits(monkeypatch, fake_llm_cls):
+    def fake_fetch(url, kind, domain, fetcher, use_cache=True):
+        return Page(url="https://trust.acme.com/", kind=kind, ok=True, title="Vanta",
+                    text="Trust Centers are the fastest way to demonstrate security", word_count=10)
+    monkeypatch.setattr(s3, "fetch_page", fake_fetch)
+    llm = fake_llm_cls(lambda u: CompanyProfile(is_software_product=True, sells_to_businesses=True))
+    q = s3.qualify("acme.com", home(security=["https://trust.acme.com"]), llm, fetcher=object())
+    assert q.status == "disqualified" and "Vanta" in q.reason

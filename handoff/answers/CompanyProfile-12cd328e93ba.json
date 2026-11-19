@@ -1,0 +1,26 @@
+{
+ "company_name": "Kashable",
+ "one_line_description": "Employer-sponsored low-cost installment loans for employees, repaid through payroll deductions.",
+ "is_software_product": false,
+ "sells_to_businesses": true,
+ "buyer_description": "Employers offering a voluntary benefit; loans go to individual employees",
+ "regulated_industry": "consumer lending",
+ "handles_sensitive_data": true,
+ "evidence": [
+  {
+   "field": "is_software_product",
+   "quote": "Personal loans offered through the Kashable branded Loan Program ... may be originated either by Kashable LLC (NMLS ID 1373339)",
+   "url": "https://kashable.com/"
+  },
+  {
+   "field": "sells_to_businesses",
+   "quote": "Kashable offers a benefit program to Employers providing their employees with disciplined credit at low rates.",
+   "url": "https://kashable.com/"
+  },
+  {
+   "field": "regulated_industry",
+   "quote": "This lender is licensed and regulated by the Michigan Department of Insurance and Financial Services",
+   "url": "https://kashable.com/"
+  }
+ ]
+}

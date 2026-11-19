@@ -201,6 +201,26 @@ def clean_html(html: str) -> tuple[str, str]:
     return title, text
 
 
+def link_matches(path: str, host: str, anchor: str, pats: list[str]) -> bool:
+    """Match on URL *structure*, not substrings: /security, /security-overview, trust.acme.com,
+    jobs.lever.co, or a short nav label like "Security". So /case-studies/dk-security is NOT a security page."""
+    segs = [s for s in path.lower().split("/") if s]
+    first, last = (segs[0], segs[-1]) if segs else ("", "")
+    for p in pats:
+        if "." in p:                                   # external host pattern, e.g. lever.co
+            if p in host:
+                return True
+            continue
+        if first == p or last == p or last.startswith(p + "-") or (len(segs) == 1 and last.startswith(p)):
+            return True
+        if host.startswith(p + "."):                   # trust.acme.com, careers.acme.com
+            return True
+        words = anchor.lower().split()
+        if 0 < len(words) <= 3 and p in [w.strip(":&|") for w in words]:
+            return True
+    return False
+
+
 def discover_links(html: str, page_url: str, domain: str) -> dict[str, list[str]]:
     """Map each page kind the agent loop might want to candidate URLs found on this page."""
     soup = BeautifulSoup(html, "html.parser")
@@ -216,14 +236,19 @@ def discover_links(html: str, page_url: str, domain: str) -> dict[str, list[str]
             continue
         if SKIP_LINK.search(href):
             continue
-        haystack = (parsed.path + " " + host + " " + a.get_text(" ", strip=True)).lower()
+        anchor = a.get_text(" ", strip=True).lower()
         for kind, pats in PAGE_KIND_PATTERNS.items():
-            if any(p in haystack for p in pats) and href not in found[kind] and href.rstrip("/") != page_url.rstrip("/"):
+            if link_matches(parsed.path, host, anchor, pats) and href not in found[kind] \
+                    and href.rstrip("/") != page_url.rstrip("/"):
                 found[kind].append(href)
     # Canonical paths first (/security), then shortest: /security beats /blog/our-security-journey-3
-    def rank(kind: str, url: str) -> tuple[int, int]:
-        canonical = urlparse(url).path.rstrip("/") in DEFAULT_PATHS.get(kind, [])
-        return (0 if canonical else 1, len(url))
+    def rank(kind: str, url: str) -> tuple[int, int, int]:
+        parsed = urlparse(url)
+        canonical = parsed.path.rstrip("/") in DEFAULT_PATHS.get(kind, [])
+        text = (parsed.netloc + parsed.path).lower()
+        pats = PAGE_KIND_PATTERNS[kind]
+        strength = min((i for i, p in enumerate(pats) if p in text), default=len(pats))
+        return (0 if canonical else 1, strength, len(url))
     return {k: sorted(v, key=lambda u, k=k: rank(k, u))[:5] for k, v in found.items() if v}
 
 

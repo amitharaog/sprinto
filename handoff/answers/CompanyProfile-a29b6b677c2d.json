@@ -1,0 +1,22 @@
+{
+ "company_name": "Humanly",
+ "one_line_description": "AI recruiting platform that engages, screens, interviews and schedules candidates for high-volume hiring teams.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Hourly, frontline and high-volume hiring teams",
+ "is_compliance_automation_vendor": false,
+ "regulated_industry": "HR / recruiting",
+ "handles_sensitive_data": true,
+ "evidence": [
+  {
+   "field": "sells_to_businesses",
+   "quote": "Humanly is AI recruiting software that helps hourly, frontline, and high-volume hiring teams automatically engage applicants",
+   "url": "https://www.humanly.io/"
+  },
+  {
+   "field": "handles_sensitive_data",
+   "quote": "Humanly re-engages past applicants and taps into a network of 600M+ profiles",
+   "url": "https://www.humanly.io/"
+  }
+ ]
+}

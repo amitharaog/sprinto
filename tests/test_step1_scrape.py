@@ -70,3 +70,14 @@ def test_fetch_page_success(tmp_path, monkeypatch):
     assert page.ok and page.word_count > 20 and "SOC 2" in page.cert_mentions
     again = s1.fetch_page("https://acme.com", "homepage", "acme.com", FakeFetcher(FakeResp(500)), use_cache=True)
     assert again.ok and again.from_cache
+
+
+def test_link_matching_uses_url_structure_not_substrings():
+    m = s1.link_matches
+    pats = s1.PAGE_KIND_PATTERNS["security"]
+    assert m("/security", "acme.com", "", pats)
+    assert m("/", "trust.acme.com", "", pats)
+    assert m("/legal/security-overview", "acme.com", "", pats)
+    assert not m("/case-studies/dk-security", "acme.com", "DK Security case study", pats)
+    assert not m("/resources/blog", "acme.com", "Read our blog about security and AI", pats)
+    assert m("/resources/blog", "acme.com", "Security", pats)            # short nav label still counts

@@ -1,0 +1,37 @@
+{
+ "company_name": "Farseer",
+ "one_line_description": "AI-powered FP&A platform replacing Excel-based planning, forecasting and reporting for enterprise finance teams.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Enterprise finance teams and CFOs in FMCG, Pharma, Retail, Manufacturing and Telco",
+ "is_compliance_automation_vendor": false,
+ "certifications_held": [
+  "ISO/IEC 27001"
+ ],
+ "notable_customers": [
+  "Violeta",
+  "Plinacro"
+ ],
+ "enterprise_signals": [
+  "Farseer is built for enterprise organizations across FMCG, Pharma, Retail, Manufacturing, and Telco.",
+  "SAP, Oracle, NetSuite or Dynamics data flows in"
+ ],
+ "handles_sensitive_data": true,
+ "evidence": [
+  {
+   "field": "certifications_held",
+   "quote": "IBCS-certified reports and ISO/IEC 27001 security come standard.",
+   "url": "https://www.farseer.com/"
+  },
+  {
+   "field": "enterprise_signals",
+   "quote": "Farseer is built for enterprise organizations across FMCG, Pharma, Retail, Manufacturing, and Telco.",
+   "url": "https://www.farseer.com/"
+  },
+  {
+   "field": "handles_sensitive_data",
+   "quote": "We integrate your systems and structure your data in an isolated, ISO-certified environment.",
+   "url": "https://www.farseer.com/"
+  }
+ ]
+}

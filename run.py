@@ -13,6 +13,7 @@ from pathlib import Path
 
 from outreach import config
 from outreach.llm import LLM
+from outreach.llm_handoff import HandoffLLM
 from outreach.pipeline import Pipeline
 
 
@@ -35,24 +36,35 @@ def main() -> int:
     ap.add_argument("inputs", nargs="+", help="domains.txt and/or domains")
     ap.add_argument("--dry-run", action="store_true", help="draft and save .eml files, don't send")
     ap.add_argument("--no-cache", action="store_true", help="re-fetch pages even if cached this week")
+    ap.add_argument("--llm", choices=["api", "handoff"], default=None,
+                    help="api = Anthropic API (needs ANTHROPIC_API_KEY); handoff = an agent such as Claude Code "
+                         "answers model requests via handoff/ files (default when no API key is set)")
+    ap.add_argument("--out", help="output folder (reuse it across handoff rounds)")
     args = ap.parse_args()
 
     domains = read_domains(args.inputs)
     if not domains:
         print("No domains given.")
         return 1
-    if not (os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN")):
-        print("ANTHROPIC_API_KEY is not set. Add it to .env (see README, Step 2).")
+    has_key = bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN"))
+    mode = args.llm or ("api" if has_key else "handoff")
+    if mode == "api" and not has_key:
+        print("ANTHROPIC_API_KEY is not set. Add it to .env, or use --llm handoff (see README).")
         return 1
     if not args.dry_run and not config.MY_EMAIL:
         print("MY_EMAIL is not set in .env - running as --dry-run (drafts only).")
         args.dry_run = True
 
-    print(f"Running {len(domains)} domain(s) with {config.CLAUDE_MODEL}"
+    print(f"Running {len(domains)} domain(s) with {config.CLAUDE_MODEL if mode == 'api' else 'handoff model'}"
           f"{' [dry run]' if args.dry_run else f' -> sending to {config.MY_EMAIL}'}")
-    pipe = Pipeline(LLM(), dry_run=args.dry_run, use_cache=not args.no_cache)
-    pipe.run(domains)
-    print(f"\nDone. Summary: {pipe.out_dir / 'summary.md'}")
+    llm = LLM() if mode == "api" else HandoffLLM()
+    pipe = Pipeline(llm, out_dir=Path(args.out) if args.out else None, dry_run=args.dry_run,
+                    use_cache=not args.no_cache)
+    results = pipe.run(domains)
+    waiting = [r.domain for r in results if r.outcome == "awaiting_model"]
+    if waiting:
+        print(f"\n{len(waiting)} company(ies) waiting for model answers in handoff/pending/ - answer them and re-run.")
+    print(f"\nSummary: {pipe.out_dir / 'summary.md'}")
     return 0
 
 

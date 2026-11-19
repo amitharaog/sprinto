@@ -1,0 +1,34 @@
+{
+ "company_name": "Uptiq",
+ "one_line_description": "Financial AI platform that deploys AI agents for banks, credit unions, wealth and equipment-finance firms.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Banks, credit unions, wealth managers, equipment finance firms and private credit lenders",
+ "is_compliance_automation_vendor": false,
+ "enterprise_signals": [
+  "The only bank-grade AI platform.",
+  "community of 500+ Financial Institutions"
+ ],
+ "regulated_industry": "banking / credit unions / wealth management",
+ "handles_sensitive_data": true,
+ "recent_news": [
+  "Uptiq Launches GovernAI to Provide Bank-Grade AI Governance for Financial Institutions"
+ ],
+ "evidence": [
+  {
+   "field": "regulated_industry",
+   "quote": "Uptiq is the Financial AI platform purpose-built for financial services. Deploy AI agents for banking, credit unions, wealth management",
+   "url": "https://www.uptiq.ai/"
+  },
+  {
+   "field": "enterprise_signals",
+   "quote": "The only bank-grade AI platform.",
+   "url": "https://www.uptiq.ai/"
+  },
+  {
+   "field": "recent_news",
+   "quote": "Uptiq Launches GovernAI to Provide Bank-Grade AI Governance for Financial Institutions",
+   "url": "https://www.uptiq.ai/"
+  }
+ ]
+}

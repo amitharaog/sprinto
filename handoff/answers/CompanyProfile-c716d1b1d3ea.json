@@ -1,0 +1,29 @@
+{
+ "company_name": "Ampersand",
+ "one_line_description": "Integration infrastructure for building deep, bidirectional CRM/ERP integrations into enterprise products.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Engineering teams at software companies building enterprise products",
+ "is_compliance_automation_vendor": false,
+ "enterprise_signals": [
+  "We also offer EU data residency and on-prem deployments for enterprise tier customers.",
+  "Integration Infrastructure for Enterprise Products"
+ ],
+ "notable_customers": [
+  "Hatch (Acquired by Yelp)"
+ ],
+ "handles_sensitive_data": true,
+ "sells_in_eu_or_uk": true,
+ "evidence": [
+  {
+   "field": "enterprise_signals",
+   "quote": "We also offer EU data residency and on-prem deployments for enterprise tier customers.",
+   "url": "https://www.ampersand.ai/"
+  },
+  {
+   "field": "handles_sensitive_data",
+   "quote": "Ampersand isolates each customer\u2019s integration environment and manages access and credentials on a per-tenant basis.",
+   "url": "https://www.ampersand.ai/"
+  }
+ ]
+}

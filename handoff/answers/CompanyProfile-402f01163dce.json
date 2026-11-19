@@ -1,0 +1,31 @@
+{
+ "company_name": "Zocks",
+ "one_line_description": "AI assistant for financial advisors that preps meetings, takes notes, updates CRM/planning tools and automates onboarding.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Financial advisory firms and RIAs",
+ "is_compliance_automation_vendor": false,
+ "enterprise_signals": [
+  "Trusted by 5,000+ firms & 7 of the 9 Barron\u2019s top mega RIAs",
+  "all the privacy, security & compliance controls you need to roll this out across your organization"
+ ],
+ "regulated_industry": "financial services (wealth management / RIAs)",
+ "handles_sensitive_data": true,
+ "evidence": [
+  {
+   "field": "enterprise_signals",
+   "quote": "Trusted by 5,000+ firms & 7 of the 9 Barron\u2019s top mega RIAs",
+   "url": "https://www.zocks.io/"
+  },
+  {
+   "field": "regulated_industry",
+   "quote": "5,000+ firms run on Zocks, the #1 AI Assistant for Financial Services (G2).",
+   "url": "https://www.zocks.io/"
+  },
+  {
+   "field": "handles_sensitive_data",
+   "quote": "Zocks automatically captures client information from meetings, emails, and documents, completes intake forms and account applications",
+   "url": "https://www.zocks.io/"
+  }
+ ]
+}

@@ -16,6 +16,7 @@ from typing import Any, Optional
 
 from . import config
 from .llm import LLMError, StructuredLLM
+from .llm_handoff import NeedsAnswer
 from .step1_scrape import Fetcher, normalize_domain, scrape_homepage
 from .step3_qualify import qualify
 from .step4_poc import find_poc
@@ -27,7 +28,7 @@ from .step7_send import AuthFailed, build_message, send
 @dataclass
 class CompanyResult:
     domain: str
-    outcome: str = "pending"         # emailed | drafted | disqualified | manual_review | no_poc | failed
+    outcome: str = "pending"         # emailed | drafted | disqualified | manual_review | no_poc | failed | awaiting_model
     summary: str = ""
     seconds: float = 0.0
     trace: dict[str, Any] = field(default_factory=dict)
@@ -48,7 +49,8 @@ def _jsonable(obj: Any) -> Any:
 def review_notes(domain, q, poc, pains, draft, problems) -> str:
     c = poc.contact
     lines = [
-        f"Intended recipient: {c.first_name} {c.last_name} <{c.email}> - {c.position} (source: {c.source})",
+        f"Intended recipient: {c.first_name} {c.last_name} <{c.email or 'email not found - verify in Hunter/Apollo'}>"
+        f" - {c.position} (source: {c.source})",
         f"Company: {domain}  |  Status: {q.status}  |  ICP score: {q.score}",
         "", "WHY THIS COMPANY QUALIFIED", q.reason, *[f"  {r}" for r in q.score_breakdown],
         f"  Why now: {q.judgment.why_now_trigger}" if q.judgment else "",
@@ -92,6 +94,8 @@ class Pipeline:
         res = CompanyResult(domain=domain)
         try:
             self._run_steps(domain, res)
+        except NeedsAnswer as e:
+            res.outcome, res.summary = "awaiting_model", str(e)
         except LLMError as e:
             res.outcome, res.summary = "failed", f"Claude call failed: {e}"
         except Exception as e:  # never let one company kill the batch
@@ -156,6 +160,10 @@ class Pipeline:
                 sent = send(msg, eml, dry_run=True)
                 sent.note = f"not sent: {e}"
         res.trace["step7_send"] = sent
+        outbox = self.out_dir / "outbox"
+        outbox.mkdir(exist_ok=True)
+        (outbox / f"{domain}.json").write_text(json.dumps({
+            "to": msg["To"], "subject": draft.subject, "body": msg.get_content(), "sent": sent.sent}, indent=1))
         log(f"    7 {sent.note} -> {sent.eml_path}")
         res.outcome = "emailed" if sent.sent else "drafted"
         res.summary = f"{c.first_name} {c.last_name} ({c.position}) - \"{draft.subject}\""

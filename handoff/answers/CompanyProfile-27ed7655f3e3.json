@@ -1,0 +1,48 @@
+{
+ "company_name": "RemotePass",
+ "one_line_description": "Platform to hire, pay and manage global teams (EOR, contractors, payroll, spend cards) across 180+ countries.",
+ "is_software_product": true,
+ "sells_to_businesses": true,
+ "buyer_description": "Companies hiring and paying international teams (HR, people and finance leaders)",
+ "is_compliance_automation_vendor": false,
+ "certifications_held": [
+  "SOC 2 Type II"
+ ],
+ "notable_customers": [
+  "Valmont",
+  "Moniepoint",
+  "Grubtech",
+  "Fresha",
+  "Pemo",
+  "Amwal",
+  "Chaos"
+ ],
+ "enterprise_signals": [
+  "Valmont \u00b7 US Multinational \u00b7 ME, North Africa, Sub-Saharan Africa"
+ ],
+ "regulated_industry": "HR/payroll",
+ "handles_sensitive_data": true,
+ "sells_in_eu_or_uk": true,
+ "evidence": [
+  {
+   "field": "certifications_held",
+   "quote": "SOC 2 Type II Independently audited security controls",
+   "url": "https://www.remotepass.com/"
+  },
+  {
+   "field": "enterprise_signals",
+   "quote": "Valmont \u00b7 US Multinational \u00b7 ME, North Africa, Sub-Saharan Africa",
+   "url": "https://www.remotepass.com/"
+  },
+  {
+   "field": "regulated_industry",
+   "quote": "Multi-country payroll with local tax compliance, multi-currency payments, and consolidated invoicing.",
+   "url": "https://www.remotepass.com/"
+  },
+  {
+   "field": "sells_in_eu_or_uk",
+   "quote": "From Egypt to London and Brazil to Singapore, access global talent with EOR",
+   "url": "https://www.remotepass.com/"
+  }
+ ]
+}

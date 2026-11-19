@@ -20,6 +20,7 @@ Who decides what:
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Callable, Literal, Optional
 
@@ -62,15 +63,38 @@ QUESTIONS: list[tuple[Question, Callable[[CompanyProfile, set[str]], bool]]] = [
 ]
 
 
+def _norm_cert(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", s.lower()).replace("iec", "")   # "ISO/IEC 27001:2022" -> "iso270012022"
+
+
 def _has(certs: list[str], name: str) -> bool:
-    n = name.lower().replace(" ", "")
-    return any(n in c.lower().replace(" ", "").replace("-", "") for c in certs)
+    n = _norm_cert(name)
+    return any(n in _norm_cert(c) for c in certs)
 
 
-def short_circuit(domain: str, p: CompanyProfile) -> Optional[str]:
+COMPLIANCE_PLATFORMS = ["Vanta", "Drata", "Secureframe", "Thoropass", "Scrut", "Scytale", "Sprinto", "Hyperproof"]
+
+
+def detect_compliance_platform(pages: list[Page]) -> Optional[str]:
+    """A trust centre hosted by a compliance-automation vendor means they already pay for one.
+    Checked in code on the security page's title/host (e.g. trust.acme.com titled 'Vanta')."""
+    for pg in pages:
+        if pg.kind != "security" or not pg.ok:
+            continue
+        head = (pg.title + " " + pg.url + " " + pg.text[:300]).lower()
+        for name in COMPLIANCE_PLATFORMS:
+            if re.search(rf"\b{name.lower()}\b", head):
+                return name
+    return None
+
+
+def short_circuit(domain: str, p: CompanyProfile, pages: Optional[list[Page]] = None) -> Optional[str]:
     """A single answer that ends the whole assessment. Returns the reason, or None."""
     if domain in config.COMPETITOR_DOMAINS or p.is_compliance_automation_vendor:
         return "Sells compliance automation itself - a competitor, not a customer."
+    if pages and (platform := detect_compliance_platform(pages)) and platform != "Sprinto":
+        return (f"Already runs compliance on {platform} (its trust centre is hosted by {platform}) - "
+                "a displacement deal, not a cold first-touch prospect.")
     if p.is_software_product is False:
         return "Not a software/SaaS business."
     if p.sells_to_businesses is False:
@@ -208,7 +232,7 @@ def qualify(domain: str, homepage: Page, llm: StructuredLLM, fetcher: Fetcher | 
 
     stop_reason: Optional[str] = None
     for iteration in range(1, config.MAX_EXTRA_FETCHES + 2):
-        if (stop_reason := short_circuit(domain, profile)):
+        if (stop_reason := short_circuit(domain, profile, pages)):
             trace.append(LoopStep(iteration, [], "short_circuit", result=stop_reason))
             break
         open_qs = [q for q, ok in QUESTIONS if not ok(profile, kinds_ok())]
