@@ -2,7 +2,8 @@
 
     python -m outreach.export_dashboard outputs/live-run [--sent uptiq.ai,zocks.io,...]
 
-Writes <run>/dashboard/companies.csv, scores.csv and loop.csv. Contacts appear by
+Writes <run>/dashboard/companies.csv, scores.csv and loop.csv, and dashboard/data.json
+for the static dashboard deployed on Vercel. Contacts appear by
 role only (names stay in the emails), so the files can be shared with a team.
 --sent marks emails that were delivered some other way (e.g. a Gmail connector),
 since the pipeline itself only knows about SMTP sends.
@@ -13,7 +14,10 @@ import argparse
 import csv
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
+
+from .config import QUALIFY_SCORE_THRESHOLD as QUALIFY_THRESHOLD
 
 STAGES = ["Scraped", "Qualified", "Contact found", "Emailed"]
 
@@ -23,7 +27,7 @@ def _points(line: str) -> tuple[int, str]:
     return (int(m.group(1)), m.group(2)) if m else (0, line)
 
 
-def export(run_dir: Path, sent: set[str]) -> Path:
+def export(run_dir: Path, sent: set[str], site_dir: Path | None = None) -> Path:
     out = run_dir / "dashboard"
     out.mkdir(exist_ok=True)
     companies, scores, loop = [], [], []
@@ -64,6 +68,12 @@ def export(run_dir: Path, sent: set[str]) -> Path:
             loop.append({"domain": r["domain"], "iteration": s["iteration"], "action": s["action"],
                          "url": s.get("url") or "", "result": s.get("result") or ""})
 
+    if site_dir:
+        site_dir.mkdir(parents=True, exist_ok=True)
+        (site_dir / "data.json").write_text(json.dumps(
+            {"run": run_dir.name, "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+             "threshold": QUALIFY_THRESHOLD, "companies": companies, "scores": scores, "loop": loop},
+            indent=1, ensure_ascii=False))
     for name, rows in (("companies", companies), ("scores", scores), ("loop", loop)):
         with open(out / f"{name}.csv", "w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
@@ -76,5 +86,6 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("run_dir")
     ap.add_argument("--sent", default="", help="comma-separated domains whose email was delivered")
+    ap.add_argument("--site", default="dashboard", help="folder of the Vercel dashboard; data.json is written there")
     a = ap.parse_args()
-    print(export(Path(a.run_dir), {d.strip() for d in a.sent.split(",") if d.strip()}))
+    print(export(Path(a.run_dir), {d.strip() for d in a.sent.split(",") if d.strip()}, Path(a.site)))

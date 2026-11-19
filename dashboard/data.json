@@ -1,0 +1,389 @@
+{
+ "run": "live-run",
+ "generated": "2026-11-19T04:50:33+00:00",
+ "threshold": 5,
+ "companies": [
+  {
+   "domain": "farseer.com",
+   "company": "Farseer",
+   "outcome": "disqualified",
+   "furthest_stage": "Scraped",
+   "icp_score": 4,
+   "fit": "weak",
+   "reason": "ICP score 4 is below the threshold of 5.",
+   "why_now": "Sells to enterprise finance teams that may ask for SOC 2 if it expands to US buyers.",
+   "certifications": "ISO/IEC 27001",
+   "extra_pages_read": 0,
+   "contact_role": "",
+   "contact_source": "",
+   "email_subject": "",
+   "hook_fact": "",
+   "draft_attempts": "",
+   "seconds": 1.3
+  },
+  {
+   "domain": "humanly.io",
+   "company": "Humanly",
+   "outcome": "disqualified",
+   "furthest_stage": "Scraped",
+   "icp_score": 4,
+   "fit": "moderate",
+   "reason": "ICP score 4 is below the threshold of 5.",
+   "why_now": "Handles candidate PII for 1,000+ high-volume hiring teams.",
+   "certifications": "",
+   "extra_pages_read": 3,
+   "contact_role": "",
+   "contact_source": "",
+   "email_subject": "",
+   "hook_fact": "",
+   "draft_attempts": "",
+   "seconds": 2.1
+  },
+  {
+   "domain": "kashable.com",
+   "company": "Kashable",
+   "outcome": "disqualified",
+   "furthest_stage": "Scraped",
+   "icp_score": 4,
+   "fit": "",
+   "reason": "Not a software/SaaS business.",
+   "why_now": "",
+   "certifications": "",
+   "extra_pages_read": 0,
+   "contact_role": "",
+   "contact_source": "",
+   "email_subject": "",
+   "hook_fact": "",
+   "draft_attempts": "",
+   "seconds": 0.4
+  },
+  {
+   "domain": "procuros.io",
+   "company": "Procuros",
+   "outcome": "disqualified",
+   "furthest_stage": "Scraped",
+   "icp_score": 3,
+   "fit": "weak",
+   "reason": "ICP score 3 is below the threshold of 5.",
+   "why_now": "European expansion with retailers and suppliers exchanging invoices and orders through Procuros.",
+   "certifications": "",
+   "extra_pages_read": 3,
+   "contact_role": "",
+   "contact_source": "",
+   "email_subject": "",
+   "hook_fact": "",
+   "draft_attempts": "",
+   "seconds": 1.6
+  },
+  {
+   "domain": "remotepass.com",
+   "company": "RemotePass",
+   "outcome": "emailed",
+   "furthest_stage": "Emailed",
+   "icp_score": 6,
+   "fit": "moderate",
+   "reason": "ICP score 6 >= 5. B2B HR/payroll SaaS handling highly sensitive employee and payment data for multinational customers, including in the EU/UK. It already holds SOC 2 Type II, so the fit is an ISO 27001 / multi-framework expansion rather than a first audit.",
+   "why_now": "RemotePass runs payroll and employment for multinationals like Valmont across 180+ countries; with SOC 2 Type II done, the next enterprise and EU buyer ask is usually ISO 27001.",
+   "certifications": "SOC 2 Type II",
+   "extra_pages_read": 0,
+   "contact_role": "Co-founder & CEO",
+   "contact_source": "web_research",
+   "email_subject": "ISO 27001 for RemotePass's multinational deals",
+   "hook_fact": "SOC 2 Type II Independently audited security controls",
+   "draft_attempts": 1,
+   "seconds": 1.6
+  },
+  {
+   "domain": "uptiq.ai",
+   "company": "Uptiq",
+   "outcome": "emailed",
+   "furthest_stage": "Emailed",
+   "icp_score": 5,
+   "fit": "strong",
+   "reason": "ICP score 5 >= 5. B2B AI platform sold to 500+ regulated financial institutions, which run strict vendor due diligence. It holds SOC 2 Type 2 but no ISO 27001, and a new governance product raises the bar further - a clear multi-framework expansion fit.",
+   "why_now": "Uptiq just launched GovernAI for bank-grade AI governance; every bank and credit union that buys it runs vendor due diligence, and SOC 2 alone often isn't enough for their vendor-risk teams.",
+   "certifications": "SOC 2 Type 2",
+   "extra_pages_read": 1,
+   "contact_role": "CTO",
+   "contact_source": "web_research",
+   "email_subject": "GovernAI and the next bank security review",
+   "hook_fact": "Uptiq Launches GovernAI to Provide Bank-Grade AI Governance for Financial Institutions",
+   "draft_attempts": 1,
+   "seconds": 1.1
+  },
+  {
+   "domain": "withampersand.com",
+   "company": "Ampersand",
+   "outcome": "disqualified",
+   "furthest_stage": "Scraped",
+   "icp_score": 6,
+   "fit": "",
+   "reason": "Already runs compliance on Vanta (its trust centre is hosted by Vanta) - a displacement deal, not a cold first-touch prospect.",
+   "why_now": "",
+   "certifications": "",
+   "extra_pages_read": 1,
+   "contact_role": "",
+   "contact_source": "",
+   "email_subject": "",
+   "hook_fact": "",
+   "draft_attempts": "",
+   "seconds": 1.7
+  },
+  {
+   "domain": "zocks.io",
+   "company": "Zocks",
+   "outcome": "emailed",
+   "furthest_stage": "Emailed",
+   "icp_score": 5,
+   "fit": "moderate",
+   "reason": "ICP score 5 >= 5. B2B AI software capturing sensitive client financial data for RIAs and wealth firms - a regulated buyer base with heavy vendor due diligence. SOC 2 appears to be in place, so the angle is ISO 27001 and continuous compliance as enterprise deals scale.",
+   "why_now": "Zocks is rolling out to mega RIAs (7 of the 9 Barron's top), whose security reviews of an AI tool that records client meetings are some of the toughest in wealth management.",
+   "certifications": "SOC 2",
+   "extra_pages_read": 1,
+   "contact_role": "CTO and Co-founder",
+   "contact_source": "web_research",
+   "email_subject": "Security reviews from the mega RIAs",
+   "hook_fact": "Trusted by 5,000+ firms & 7 of the 9 Barron’s top mega RIAs",
+   "draft_attempts": 1,
+   "seconds": 1.0
+  }
+ ],
+ "scores": [
+  {
+   "domain": "farseer.com",
+   "points": 2,
+   "reason": "Selling to enterprises (Farseer is built for enterprise organizations across FMCG, Pharma, Retail, Manufacturing, and Telco.; SAP, Oracle, NetSuite or Dynamics data flows in) - buyers demand SOC 2/ISO"
+  },
+  {
+   "domain": "farseer.com",
+   "points": 1,
+   "reason": "Handles sensitive customer data"
+  },
+  {
+   "domain": "farseer.com",
+   "points": 1,
+   "reason": "Has ISO 27001 but not SOC 2 - expansion angle"
+  },
+  {
+   "domain": "humanly.io",
+   "points": 2,
+   "reason": "Serves a regulated industry (HR / recruiting)"
+  },
+  {
+   "domain": "humanly.io",
+   "points": 2,
+   "reason": "No certification claimed"
+  },
+  {
+   "domain": "kashable.com",
+   "points": 2,
+   "reason": "Serves a regulated industry (consumer lending)"
+  },
+  {
+   "domain": "kashable.com",
+   "points": 2,
+   "reason": "No certification claimed"
+  },
+  {
+   "domain": "procuros.io",
+   "points": 1,
+   "reason": "Sells in the EU/UK - GDPR exposure"
+  },
+  {
+   "domain": "procuros.io",
+   "points": 2,
+   "reason": "No certification claimed"
+  },
+  {
+   "domain": "remotepass.com",
+   "points": 2,
+   "reason": "Selling to enterprises (Valmont · US Multinational · ME, North Africa, Sub-Saharan Africa) - buyers demand SOC 2/ISO"
+  },
+  {
+   "domain": "remotepass.com",
+   "points": 2,
+   "reason": "Serves a regulated industry (HR/payroll)"
+  },
+  {
+   "domain": "remotepass.com",
+   "points": 1,
+   "reason": "Sells in the EU/UK - GDPR exposure"
+  },
+  {
+   "domain": "remotepass.com",
+   "points": 1,
+   "reason": "Has SOC 2 but not ISO 27001 - expansion angle"
+  },
+  {
+   "domain": "uptiq.ai",
+   "points": 2,
+   "reason": "Selling to enterprises (The only bank-grade AI platform.; community of 500+ Financial Institutions) - buyers demand SOC 2/ISO"
+  },
+  {
+   "domain": "uptiq.ai",
+   "points": 2,
+   "reason": "Serves a regulated industry (banking / credit unions / wealth management)"
+  },
+  {
+   "domain": "uptiq.ai",
+   "points": 1,
+   "reason": "Has SOC 2 but not ISO 27001 - expansion angle"
+  },
+  {
+   "domain": "withampersand.com",
+   "points": 2,
+   "reason": "Selling to enterprises (We also offer EU data residency and on-prem deployments for enterprise tier customers.; Integration Infrastructure for Enterprise Products) - buyers demand SOC 2/ISO"
+  },
+  {
+   "domain": "withampersand.com",
+   "points": 1,
+   "reason": "Handles sensitive customer data"
+  },
+  {
+   "domain": "withampersand.com",
+   "points": 1,
+   "reason": "Sells in the EU/UK - GDPR exposure"
+  },
+  {
+   "domain": "withampersand.com",
+   "points": 2,
+   "reason": "No certification claimed on its security page"
+  },
+  {
+   "domain": "zocks.io",
+   "points": 2,
+   "reason": "Selling to enterprises (Trusted by 5,000+ firms & 7 of the 9 Barron’s top mega RIAs; all the privacy, security & compliance controls you need to roll this out across your organization) - buyers demand SOC 2/ISO"
+  },
+  {
+   "domain": "zocks.io",
+   "points": 2,
+   "reason": "Serves a regulated industry (financial services (wealth management / RIAs))"
+  },
+  {
+   "domain": "zocks.io",
+   "points": 1,
+   "reason": "Has SOC 2 but not ISO 27001 - expansion angle"
+  }
+ ],
+ "loop": [
+  {
+   "domain": "farseer.com",
+   "iteration": 1,
+   "action": "stop",
+   "url": "",
+   "result": "all questions answered"
+  },
+  {
+   "domain": "humanly.io",
+   "iteration": 1,
+   "action": "fetch security page for 'Already certified?'",
+   "url": "https://humanly.io/security",
+   "result": "failed: soft_404: page says 'Page not found | Humanly'"
+  },
+  {
+   "domain": "humanly.io",
+   "iteration": 2,
+   "action": "fetch careers page for 'Right stage / compliance pressure?'",
+   "url": "https://www.humanly.io/careers",
+   "result": "ok (618 words); re-extracted profile"
+  },
+  {
+   "domain": "humanly.io",
+   "iteration": 3,
+   "action": "fetch careers page for 'Right stage / compliance pressure?'",
+   "url": "https://www.humanly.io/pulses",
+   "result": "ok (50 words); re-extracted profile"
+  },
+  {
+   "domain": "humanly.io",
+   "iteration": 4,
+   "action": "stop",
+   "url": "",
+   "result": "no budget or sources left for open questions"
+  },
+  {
+   "domain": "kashable.com",
+   "iteration": 1,
+   "action": "short_circuit",
+   "url": "",
+   "result": "Not a software/SaaS business."
+  },
+  {
+   "domain": "procuros.io",
+   "iteration": 1,
+   "action": "fetch security page for 'Already certified?'",
+   "url": "https://procuros.io/security",
+   "result": "failed: http_404"
+  },
+  {
+   "domain": "procuros.io",
+   "iteration": 2,
+   "action": "fetch careers page for 'Right stage / compliance pressure?'",
+   "url": "https://procuros.io/careers",
+   "result": "ok (698 words); re-extracted profile"
+  },
+  {
+   "domain": "procuros.io",
+   "iteration": 3,
+   "action": "fetch careers page for 'Right stage / compliance pressure?'",
+   "url": "https://procuros.io/de/careers",
+   "result": "ok (722 words); re-extracted profile"
+  },
+  {
+   "domain": "procuros.io",
+   "iteration": 4,
+   "action": "stop",
+   "url": "",
+   "result": "no budget or sources left for open questions"
+  },
+  {
+   "domain": "remotepass.com",
+   "iteration": 1,
+   "action": "stop",
+   "url": "",
+   "result": "all questions answered"
+  },
+  {
+   "domain": "uptiq.ai",
+   "iteration": 1,
+   "action": "fetch security page for 'Already certified?'",
+   "url": "https://www.uptiq.ai/ai-security",
+   "result": "ok (209 words); re-extracted profile"
+  },
+  {
+   "domain": "uptiq.ai",
+   "iteration": 2,
+   "action": "stop",
+   "url": "",
+   "result": "all questions answered"
+  },
+  {
+   "domain": "withampersand.com",
+   "iteration": 1,
+   "action": "fetch security page for 'Already certified?'",
+   "url": "https://trust.ampersand.ai",
+   "result": "ok; trust centre hosted by Vanta"
+  },
+  {
+   "domain": "withampersand.com",
+   "iteration": 2,
+   "action": "short_circuit",
+   "url": "",
+   "result": "Already runs compliance on Vanta (its trust centre is hosted by Vanta) - a displacement deal, not a cold first-touch prospect."
+  },
+  {
+   "domain": "zocks.io",
+   "iteration": 1,
+   "action": "fetch security page for 'Already certified?'",
+   "url": "https://www.zocks.io/platform/privacy-security",
+   "result": "ok (89 words); re-extracted profile"
+  },
+  {
+   "domain": "zocks.io",
+   "iteration": 2,
+   "action": "stop",
+   "url": "",
+   "result": "all questions answered"
+  }
+ ]
+}
